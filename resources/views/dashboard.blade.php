@@ -253,6 +253,7 @@
         <!-- /top navigation -->
 
         <!-- page content -->
+        
         <div class="right_col" role="main">
           <div ng-view></div>
         </div>
@@ -260,11 +261,13 @@
     </div>
 
     <!-- jQuery -->
-    <script src="{{asset('assets/jquery/dist/jquery.min.js')}}"></script>
-    <!-- angular -->
-    <script src="{{asset('angular/angular.min.js')}}"></script>
-    <script src="{{asset('angular/angular-route.min.js')}}"></script>
-    <script src="{{asset('angular/main.js')}}"></script>
+        <script src="{{asset('assets/jquery/dist/jquery.min.js')}}"></script>
+        <!-- angular -->
+        <script src="{{asset('angular/angular.min.js')}}"></script>
+        <script src="{{asset('angular/angular-route.min.js')}}"></script>
+        <script src="{{asset('angular/main.js')}}"></script>
+
+        <script src="{{asset('angular/controllers/productoController.js')}}"></script>
     
     <!-- Bootstrap -->
     <script src="{{asset('assets/bootstrap/js/bootstrap.min.js')}}"></script>
