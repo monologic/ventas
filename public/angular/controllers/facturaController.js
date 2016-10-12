@@ -1,7 +1,7 @@
-app.controller('productoController', function($scope, $http) {
+app.controller('facturaController', function($scope, $http) {
 
     $scope.store = function () {
-    	$http.post('../productos',
+        $http.post('../facturas',
             {   'descripcion':$scope.descripcion,
                 'valor_unitario':$scope.val_unit,
                 'codigo':$scope.codigo
@@ -17,7 +17,7 @@ app.controller('productoController', function($scope, $http) {
                         closeOnConfirm: true
                     },
                     function(){
-                        window.location.href = '#/Productos';
+                        window.location.href = '#/Factura';
                     });
             }, function errorCallback(response) {
             // called asynchronously if an error occurs
@@ -32,7 +32,7 @@ app.controller('productoController', function($scope, $http) {
     }
 
     $scope.get = function () {
-        $http.get('productos').then(function successCallback(response) {
+        $http.get('facturas').then(function successCallback(response) {
                 $scope.data = response.data;
             }, function errorCallback(response) {
             // called asynchronously if an error occurs
@@ -49,7 +49,7 @@ app.controller('productoController', function($scope, $http) {
     }
 
     $scope.update = function () {
-        $http.put('productos/' + $scope.id,
+        $http.put('facturas/' + $scope.id,
             {   'descripcion':$scope.descripcion,
                 'valor_unitario':$scope.valor_unitario,
                 'codigo':$scope.codigo

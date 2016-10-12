@@ -29,7 +29,7 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        $data = new Banco($request->all());
+        $data = new Producto($request->all());
         $data->save();
     }
 
