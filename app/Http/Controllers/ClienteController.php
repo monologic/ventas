@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Cliente;
+use App\IdentidadDocumento;
 
 class ClienteController extends Controller
 {
@@ -54,4 +55,5 @@ class ClienteController extends Controller
     {
         Cliente::destroy($id);
     }
+
 }

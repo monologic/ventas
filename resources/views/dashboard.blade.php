@@ -227,6 +227,9 @@
         <script src="{{asset('angular/main.js')}}"></script>
 
         <script src="{{asset('angular/controllers/productoController.js')}}"></script>
+        <script src="{{asset('angular/controllers/facturaController.js')}}"></script>
+
+        <script src="{{asset('angular/services/services.js')}}"></script>
     
     <!-- Bootstrap -->
     <script src="{{asset('assets/bootstrap/js/bootstrap.min.js')}}"></script>

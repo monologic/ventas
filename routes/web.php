@@ -16,3 +16,5 @@ Route::get('/', function () {
 });
 
 Route::resource('productos', 'ProductoController');
+
+Route::get('getDocumento/{numero}', 'IdentidadDocumentoController@getDocumento');

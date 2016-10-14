@@ -1,4 +1,25 @@
-app.controller('facturaController', function($scope, $http) {
+app.controller('facturaController', function($scope, $http, tipoDocumento) {
+
+    $scope.documentoTipos = tipoDocumento;
+    $scope.tipo_doc = $scope.documentoTipos[3];
+
+    $scope.searchDocumento = function (numero) {
+        if (numero != undefined) {
+            $http.get('getDocumento/' + numero).then(function successCallback(response) {
+                if (response.data.hasOwnProperty('tipo_doc')) {
+                    $('#tipo_doc').val(response.data.tipo_doc);
+                    $scope.nombre = response.data.clientes[0].nombre;
+                }
+                else{
+                    $scope.nuevoCbtn = true;
+                }
+                
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            });
+        }
+    }
 
     $scope.store = function () {
         $http.post('../facturas',

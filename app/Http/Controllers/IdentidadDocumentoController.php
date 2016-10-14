@@ -54,4 +54,15 @@ class IdentidadDocumentoController extends Controller
     {
         IdentidadDocumento::destroy($id);
     }
+
+    public function getDocumento($numero)
+    {
+        $di = IdentidadDocumento::where('numero', $numero)->get();
+        if (count($di) > 0) {
+            $di = $di[0];
+            $di->clientes;
+        }
+
+        return response()->json( $di );
+    }
 }

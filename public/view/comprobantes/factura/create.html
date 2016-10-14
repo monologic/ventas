@@ -1,94 +1,22 @@
 <div ng-controller="facturaController">
 	<h1>Factura</h1>
-	<div>
-		<div>
-			<form class="form-inline">
-				<div class="row">
-					<div class="col-md-4">
-						<label for="descripcion">Número de documento de identidad</label>
-			    		<input type="text" class="form-control" id="numero" placeholder="DNI o RUC" ng-model="numero">
-					</div>
-					<div class="col-md-4">
-						<label for="descripcion">Tipo de documento de identidad</label>
-			    		<input type="text" class="form-control" id="numero" placeholder="DNI o RUC" ng-model="numero">
-					</div>
-					<div class="col-md-4">
-						<label for="descripcion">Apellidos y nombres o denominación o razón social</label>
-			    		<input type="text" class="form-control" id="numero" placeholder="DNI o RUC" ng-model="numero">
-					</div>
-				</div>
-				<table class="table">
-					<tr>
-						<th>Número de documento de identidad</th>
-						<th>Tipo de documento de identidad</th>
-						<th>Apellidos y nombres o denominación o razón social</th>
-
-					</tr>
-					<tr>
-						<td><input type="text" class="form-control" id="numero" placeholder="DNI o RUC" ng-model="numero" maxlength="15"></td>
-						<td><input type="text" class="form-control" id="numero" placeholder="DNI o RUC" ng-model="numero" maxlength=""></td>
-						<td><input type="text" class="form-control" id="numero" placeholder="DNI o RUC" ng-model="numero" maxlength="100"></td>
-
-					</tr>
-
-				</table>
-			  	<div class="form-group">
-			    	<label for="descripcion">Número de Documento</label>
-			    	<input type="text" class="form-control" id="numero" placeholder="DNI o RUC" ng-model="numero">
-			  	</div>
-			  	<div class="form-group">
-			    	<label for="val_unit">Valor Unitario</label>
-			    	<input type="number" class="form-control" placeholder="Valor unitario del producto o servicio no inlcuído IGV" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" ng-model="val_unit" required>
-			  	</div>
-			  	<div class="form-group">
-			    	<label for="codigo">Código (opcional)</label>
-			    	<input type="text" class="form-control" id="codigo" placeholder="Código del producto o servicio" ng-model="codigo">
-			  	</div>
-			  	<button type="submit" class="btn btn-default">Guardar</button>
-			</form>
-			<form class="form-horizontal">
-			  <div class="form-group">
-			    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
-			    <div class="col-sm-10">
-			      <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-			    </div>
-			  </div>
-			  <div class="form-group">
-			    <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-			    <div class="col-sm-10">
-			      <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-			    </div>
-			  </div>
-			  <div class="form-group">
-			    <div class="col-sm-offset-2 col-sm-10">
-			      <div class="checkbox">
-			        <label>
-			          <input type="checkbox"> Remember me
-			        </label>
-			      </div>
-			    </div>
-			  </div>
-			  <div class="form-group">
-			    <div class="col-sm-offset-2 col-sm-10">
-			      <button type="submit" class="btn btn-default">Sign in</button>
-			    </div>
-			  </div>
-			</form>
-		</div>
-		<form ng-submit="store()">
+	<div class="col-md-6">
+		<form ng-submit="storeCliente()">
 		  	<div class="form-group">
-		    	<label for="descripcion">Descripción</label>
-		    	<textarea class="form-control" rows="3" placeholder="Descripción del producto o servicio" ng-model="descripcion" required></textarea>
+		    	<label for="numero_di">Número de documento de identidad</label>
+		    	<input type="text" class="form-control" placeholder=""  maxlength="11" pattern="[0-9]{8,11}" ng-model="numero_di" ng-blur="searchDocumento(numero_di)" required>
 		  	</div>
 		  	<div class="form-group">
-		    	<label for="val_unit">Valor Unitario</label>
-		    	<input type="number" class="form-control" placeholder="Valor unitario del producto o servicio no inlcuído IGV" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" ng-model="val_unit" required>
+		    	<label for="tipo_doc">Tipo de documento de identidad</label>
+		    	<select class="form-control" ng-options="di as di.descripcion for di in documentoTipos track by di.codigo" ng-model="tipo_doc" id="tipo_doc" required></select>
 		  	</div>
 		  	<div class="form-group">
-		    	<label for="codigo">Código (opcional)</label>
-		    	<input type="text" class="form-control" id="codigo" placeholder="Código del producto o servicio" ng-model="codigo">
+		    	<label for="nombre">Apellidos y nombres, denominación o razón social</label>
+		    	<input type="text" class="form-control" id="nombre" placeholder="" ng-model="nombre" required>
 		  	</div>
-		  	<button type="submit" class="btn btn-default">Guardar</button>
+		  	<div ng-if="nuevoCbtn">
+		  		<button type="submit" class="btn btn-primary">Guardar Nuevo Cliente</button>
+		  	</div>
 		</form>
 	</div>
 </div>
