@@ -26,6 +26,8 @@
     <!-- Sweet Alert -->
     <script src="{{ asset('assets/SweetAlert/sweetalert.min.js') }}"></script> 
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/SweetAlert/sweetalert.css') }}">
+
+    <link rel="stylesheet" href="{{asset('css/style.css')}}" />
   </head>
 
   <body class="nav-md" ng-app="App">

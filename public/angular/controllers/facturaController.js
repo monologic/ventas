@@ -35,23 +35,32 @@ app.controller('facturaController', function($scope, $http, tipoDocumento) {
                 }
                 else
                     swal('', 'El número de documento de identidad ya está registrado', 'error');
-                /*
-                swal({  title: "Perfecto!",
-                        text: "Ha creado un nuevo registro",
-                        type: "success",   
-                        showCancelButton: true,
-                        cancelButtonText: "Seguir creando",
-                        confirmButtonText: "Ver todos",   
-                        closeOnConfirm: true
-                    },
-                    function(){
-                        window.location.href = '#/Factura';
-                    });
-                */
+            }, function errorCallback(response) {
+                
+                 swal('', 'Algo anda mal :(', 'error');
+            
+            });
+    }
+
+    $scope.getProductos = function () {
+        $http.get('../productos').then(function successCallback(response) {
+                $scope.productosAll = response.data;
             }, function errorCallback(response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.
             });
+    }
+
+    $scope.mostrarLista = function () {
+        if ($scope.productoBuscar == "")
+            $scope.activarListado = false;
+        else
+            $scope.activarListado = true;
+    }
+
+    $scope.assignValueAndHide = function (data) {
+        $scope.productoBuscar = data.descripcion;
+        $scope.activarListado = false;
     }
 
     $scope.store = function () {

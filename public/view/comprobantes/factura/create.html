@@ -1,4 +1,4 @@
-<div ng-controller="facturaController">
+<div ng-controller="facturaController" ng-init="getProductos()">
 	<h1>Factura</h1>
 	<div class="row">
 		<div class="col-md-6">
@@ -26,13 +26,16 @@
 		<div>
 			<form class="form-inline">
 			  	<div class="form-group">
-			    	<label for="exampleInputName2">Producto o Servicio</label>
-			    	<input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+			    	<label for="">Producto o Servicio</label>
+			    	<input type="text" class="form-control" ng-change="mostrarLista()" ng-blur="desenfoqueBusqueda()" ng-model="productoBuscar">
+			    	<ul class="suggestions-list" ng-if="activarListado">
+			    		<li ng-repeat="producto in productosAll | filter:productoBuscar" ng-click="assignValueAndHide(producto)">{{producto.descripcion}}</li>
+			    	</ul>
 			  	</div>
 			  	|
 			  	<div class="form-group">
-			    	<label for="exampleInputEmail2">Cantidad</label>
-			    	<input type="email" class="form-control" id="exampleInputEmail2" placeholder="jane.doe@example.com">
+			    	<label>Cantidad</label>
+			    	<input type="number" class="form-control" placeholder="Cantidad" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.001" ng-model="val_unit" required>
 			  	</div>
 			  	|	
 			  	<div class="form-group">
@@ -44,4 +47,5 @@
 			</form>
 		</div>
 	</div>
+
 </div>
