@@ -23,10 +23,14 @@ class ClienteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $idDoc)
     {
-        $data = new Cliente($request->all());
+        $data = new Cliente();
+        $data->nombre = $request->nombre;
+        $data->identidad_documento_id = $idDoc;
         $data->save();
+
+        return $data->id;
     }
 
     /**

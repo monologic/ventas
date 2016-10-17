@@ -24,8 +24,20 @@ class IdentidadDocumentoController extends Controller
      */
     public function store(Request $request)
     {
-        $data = new IdentidadDocumento($request->all());
-        $data->save();
+        if(!$this->documentoVerification($request->numero)) {
+            $data = new IdentidadDocumento($request->all());
+            $data->save();
+
+            $cCliente = new ClienteController();
+            $ret = $cCliente->store($request, $data->id);        
+
+            return response()->json( true );
+        }
+        else
+            return response()->json( false );
+
+
+        
     }
 
     /**
@@ -65,4 +77,16 @@ class IdentidadDocumentoController extends Controller
 
         return response()->json( $di );
     }
+
+    public function documentoVerification($numero)
+    {
+        $di = IdentidadDocumento::where('numero', $numero)->get();
+        if (count($di) > 0)
+            $di = true;
+        else
+            $di = false;
+
+        return $di;
+    }
+
 }

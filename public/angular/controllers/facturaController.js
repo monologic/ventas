@@ -9,9 +9,11 @@ app.controller('facturaController', function($scope, $http, tipoDocumento) {
                 if (response.data.hasOwnProperty('tipo_doc')) {
                     $('#tipo_doc').val(response.data.tipo_doc);
                     $scope.nombre = response.data.clientes[0].nombre;
+                    $scope.nuevoClientebtn = false;
                 }
                 else{
-                    $scope.nuevoCbtn = true;
+                    $scope.nombre = "";
+                    $scope.nuevoClientebtn = true;
                 }
                 
             }, function errorCallback(response) {
@@ -19,6 +21,37 @@ app.controller('facturaController', function($scope, $http, tipoDocumento) {
             // or server returns response with an error status.
             });
         }
+    }
+
+    $scope.storeCliente = function () {
+        $http.post('../identidadDocumentos',
+            {   'numero':$scope.numero_di,
+                'tipo_doc':$scope.tipo_doc.codigo,
+                'nombre':$scope.nombre
+            }).then(function successCallback(response) {
+                if (response.data) {
+                    swal('', 'Se ha guardado el nuevo Cliente', 'success');
+                    $scope.nuevoClientebtn = false;
+                }
+                else
+                    swal('', 'El número de documento de identidad ya está registrado', 'error');
+                /*
+                swal({  title: "Perfecto!",
+                        text: "Ha creado un nuevo registro",
+                        type: "success",   
+                        showCancelButton: true,
+                        cancelButtonText: "Seguir creando",
+                        confirmButtonText: "Ver todos",   
+                        closeOnConfirm: true
+                    },
+                    function(){
+                        window.location.href = '#/Factura';
+                    });
+                */
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            });
     }
 
     $scope.store = function () {
