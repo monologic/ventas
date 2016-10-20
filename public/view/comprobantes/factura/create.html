@@ -1,4 +1,4 @@
-<div ng-controller="facturaController" ng-init="getProductos()">
+<div ng-controller="facturaController" ng-init="getProductos();getInformation();">
 	<h1>Factura</h1>
 	<div class="row">
 		<div class="col-md-6">
@@ -24,10 +24,10 @@
 	<hr>
 	<div class="row">
 		<div>
-			<form class="form-inline">
+			<form class="form-inline" ng-submit="addDetalle()">
 			  	<div class="form-group">
 			    	<label for="">Producto o Servicio</label>
-			    	<input type="text" class="form-control" ng-change="mostrarLista()" ng-blur="desenfoqueBusqueda()" ng-model="productoBuscar">
+			    	<input type="text" class="form-control" ng-change="mostrarLista()" ng-blur="desenfoqueBusqueda()" ng-model="productoBuscar" required>
 			    	<ul class="suggestions-list" ng-if="activarListado">
 			    		<li ng-repeat="producto in productosAll | filter:productoBuscar" ng-click="assignValueAndHide(producto)">{{producto.descripcion}}</li>
 			    	</ul>
@@ -39,11 +39,11 @@
 			  	</div>
 			  	|	
 			  	<div class="form-group">
-			    	<label for="exampleInputEmail2">Unidad de Medida</label>
-			    	<input type="email" class="form-control" id="exampleInputEmail2" placeholder="jane.doe@example.com">
+			    	<label>Unidad de Medida</label>
+			    	<select class="form-control" ng-options="um.descripcion for um in unidadesDeMedida track by um.codigo" ng-model="unidad_medida" id="unidad_medida" required></select>
 			  	</div>
 
-			  	<button type="submit" class="btn btn-default">Send invitation</button>
+			  	<button type="submit" class="btn btn-primary">Agregar Detalle</button>
 			</form>
 		</div>
 	</div>

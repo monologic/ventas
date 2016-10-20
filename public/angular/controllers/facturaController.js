@@ -1,7 +1,9 @@
-app.controller('facturaController', function($scope, $http, tipoDocumento) {
+app.controller('facturaController', function($scope, $http, tipoDocumento, unidadesDeMedida) {
 
     $scope.documentoTipos = tipoDocumento;
     $scope.tipo_doc = $scope.documentoTipos[3];
+    $scope.unidadesDeMedida = unidadesDeMedida;
+    $scope.unidad_medida = $scope.unidadesDeMedida[0];
 
     $scope.searchDocumento = function (numero) {
         if (numero != undefined) {
@@ -51,6 +53,19 @@ app.controller('facturaController', function($scope, $http, tipoDocumento) {
             });
     }
 
+    $scope.getInformation = function () {
+        $http.get('../information').then(function successCallback(response) {
+                $scope.information = response.data;
+            }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            });
+    }
+
+    $scope.desenfoqueBusqueda = function () {
+        
+    }
+
     $scope.mostrarLista = function () {
         if ($scope.productoBuscar == "")
             $scope.activarListado = false;
@@ -59,8 +74,20 @@ app.controller('facturaController', function($scope, $http, tipoDocumento) {
     }
 
     $scope.assignValueAndHide = function (data) {
+        console.log(data);
+        $scope.idProducto = data.id;
+        $scope.valor_unitario = data.valor_unitario;
         $scope.productoBuscar = data.descripcion;
         $scope.activarListado = false;
+    }
+
+    $scope.detalles;
+    $scope.addDetalle = function () {
+        $scope.detalles.push({
+            unidad_medida: $scope.unidad_medida, 
+            cantidad: $scope.cantidad,
+            afectacion_igv: $scope.valor_unitario * $scope.information.igv,
+        });
     }
 
     $scope.store = function () {

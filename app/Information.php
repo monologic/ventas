@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Information extends Model
 {
+	protected $table = 'informations';
+
     public $timestamps = false;
 
 	protected $fillable = ['firma_digital', 'nombre', 'combre_comercial', 'domicilio_id', 'identidad_documento_id'];

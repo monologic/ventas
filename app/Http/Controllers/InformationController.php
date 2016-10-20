@@ -13,7 +13,7 @@ class InformationController extends Controller
     {
         $data = Information::all();
 
-        return response()->json($data);
+        return response()->json($data[0]);
     }
 
     /**
