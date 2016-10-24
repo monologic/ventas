@@ -74,9 +74,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
     }
 
     $scope.assignValueAndHide = function (data) {
-        console.log(data);
-        $scope.idProducto = data.id;
-        $scope.valor_unitario = data.valor_unitario;
+        $scope.Producto = data;
         $scope.productoBuscar = data.descripcion;
         $scope.activarListado = false;
     }
@@ -86,7 +84,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
         $scope.detalles.push({
             unidad_medida: $scope.unidad_medida, 
             cantidad: $scope.cantidad,
-            afectacion_igv: $scope.valor_unitario * $scope.information.igv,
+            afectacion_igv: $scope.Producto.valor_unitario * $scope.Producto.valor_unitario,
         });
     }
 
