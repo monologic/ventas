@@ -81,10 +81,19 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
 
     $scope.detalles;
     $scope.addDetalle = function () {
+
+        if ($scope.Producto.tasa_isc != null)
+            afectacion_isc = $scope.Producto.valor_unitario * $scope.Producto.tasa_isc * $scope.cantidad;
+        else 
+            afectacion_isc = 0;
+
         $scope.detalles.push({
             unidad_medida: $scope.unidad_medida, 
             cantidad: $scope.cantidad,
-            afectacion_igv: $scope.Producto.valor_unitario * $scope.Producto.valor_unitario,
+            valor_unitario:$scope.Producto.valor_unitario,
+            afectacion_igv: $scope.Producto.valor_unitario * $scope.Producto.tasa_igv * $scope.cantidad - afectacion_isc,
+            afectacion_isc: afectacion_isc;
+
         });
     }
 

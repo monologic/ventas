@@ -17,7 +17,14 @@ class ProductoController extends Controller
     public function index()
     {
         $data = Producto::all();
-
+        $data->each(function($data){
+            $igvItem = $data->valor_unitario * $data->tasa_igv;
+            $iscItem = 0;
+            if ($data->tasa_igs != null) {
+               $iscItem = $data->valor_unitario * $data->tasa_igv;
+            }
+            $data->precio_venta = round($data->valor_unitario + $igvItem + $iscItem, 2);
+        });
         return response()->json($data);
     }
 
