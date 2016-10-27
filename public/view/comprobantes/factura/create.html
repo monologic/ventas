@@ -23,7 +23,7 @@
 	</div>
 	<hr>
 	<div class="row">
-		<div>
+		<div class="col-md-12">
 			<form class="form-inline" ng-submit="addDetalle()">
 			  	<div class="form-group">
 			    	<label for="">Producto o Servicio</label>
@@ -35,7 +35,7 @@
 			  	|
 			  	<div class="form-group">
 			    	<label>Cantidad</label>
-			    	<input type="number" class="form-control" placeholder="Cantidad" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.001" ng-model="val_unit" required>
+			    	<input type="number" class="form-control" placeholder="Cantidad" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.001" ng-model="cantidad" required>
 			  	</div>
 			  	|	
 			  	<div class="form-group">
@@ -45,6 +45,51 @@
 
 			  	<button type="submit" class="btn btn-primary">Agregar Detalle</button>
 			</form>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div id="detalles">
+			<h1>Detalles de Factura</h1>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Descripción</th>
+						<th>Cantidad</th>
+						<th>Unidad de medida</th>
+						<th>Valor Unitario</th>
+						<th>Valor de Venta</th>
+						<th>ISC</th>
+						<th>IGV</th>
+						<th>Importe Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="detalle in detalles">
+						<td>{{$index + 1}}</td>
+						<td>{{ detalle.descripcion }}</td>
+						<td>{{ detalle.cantidad }}</td>
+						<td>{{ detalle.unidad_medida.descripcion }}</td>
+						<td>{{ detalle.valor_unitario }}</td>
+						<td>{{ detalle.valor_venta.toFixed(2) }}</td>
+						<td>{{ detalle.afectacion_isc.monto.toFixed(2) }}</td>
+						<td>{{ detalle.afectacion_igv.monto.toFixed(2) }}</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>{{ Factura.totalValorVenta.toFixed(2) }}</td>
+						<td>{{ Factura.totalIsc.toFixed(2) }}</td>
+						<td>{{ Factura.totalIgv.toFixed(2) }}</td>
+						<td>{{ Factura.importeTotal.toFixed(2) }}</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 

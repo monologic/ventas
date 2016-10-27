@@ -5,6 +5,9 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
     $scope.unidadesDeMedida = unidadesDeMedida;
     $scope.unidad_medida = $scope.unidadesDeMedida[0];
 
+    $scope.Factura = {};
+    $scope.detalles = [];
+
     $scope.searchDocumento = function (numero) {
         if (numero != undefined) {
             $http.get('getDocumento/' + numero).then(function successCallback(response) {
@@ -79,7 +82,6 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
         $scope.activarListado = false;
     }
 
-    $scope.detalles;
     $scope.addDetalle = function () {
 
         if ($scope.Producto.tasa_isc != null)
@@ -87,14 +89,77 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
         else 
             afectacion_isc = 0;
 
+        if ($scope.Producto.codigo != "")
+            codigo_prod = $scope.Producto.codigo;
+        else 
+            codigo_prod = null;
+
         $scope.detalles.push({
             unidad_medida: $scope.unidad_medida, 
             cantidad: $scope.cantidad,
+            descripcion: $scope.Producto.descripcion,
             valor_unitario:$scope.Producto.valor_unitario,
-            afectacion_igv: $scope.Producto.valor_unitario * $scope.Producto.tasa_igv * $scope.cantidad - afectacion_isc,
-            afectacion_isc: afectacion_isc;
-
+            precio_venta:{ 
+                monto: $scope.Producto.precio_venta,
+                codigo: '01',
+            },
+            afectacion_igv: {
+                monto: ($scope.Producto.valor_unitario  * $scope.cantidad + afectacion_isc) * $scope.Producto.tasa_igv,
+                codigo_tipo: '10',
+                codigo_tributo: '1000',
+                nombre_tributo: 'VAT'
+            },
+            afectacion_isc: {
+                monto: afectacion_isc,
+                codigo_tipo: $scope.Producto.cod_tipo_sistema_isc,
+                codigo_tributo: '2000',
+                nombre_tributo: 'EXC'
+            },
+            valor_venta: $scope.Producto.valor_unitario  * $scope.cantidad,
+            codigo_producto: codigo_prod,
+            numero_item: $scope.detalles.length + 1
         });
+
+        console.log($scope.detalles);
+
+        $scope.calcularTotalValorVenta();
+    }
+
+    $scope.calcularTotalValorVenta = function () {
+
+        var totalValorVenta = 0;
+        for ( i in $scope.detalles) {
+            totalValorVenta += $scope.detalles[i].valor_venta;
+        }
+        $scope.Factura.totalValorVenta = totalValorVenta;
+
+        $scope.calcularTotalIgv();
+    }
+
+    $scope.calcularTotalIgv = function () {
+
+        var totalIgv = 0;
+        for ( i in $scope.detalles) {
+            totalIgv += $scope.detalles[i].afectacion_igv.monto;
+        }
+        $scope.Factura.totalIgv = totalIgv;
+
+        $scope.calcularTotalIsc();
+    }
+
+    $scope.calcularTotalIsc = function () {
+
+        var totalIsc = 0;
+        for ( i in $scope.detalles) {
+            totalIsc += $scope.detalles[i].afectacion_isc.monto;
+        }
+        $scope.Factura.totalIsc = totalIsc;
+
+        $scope.calcularImporteTotal();
+    }
+
+    $scope.calcularImporteTotal = function () {
+        $scope.Factura.importeTotal = $scope.Factura.totalValorVenta + $scope.Factura.totalIsc + $scope.Factura.totalIgv;
     }
 
     $scope.store = function () {
