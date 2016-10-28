@@ -92,5 +92,35 @@
 			</table>
 		</div>
 	</div>
+	<div class="row">
+		<div>
+			<div class="checkbox">
+			    <label>
+			      	<input type="checkbox" ng-model="divPercepcion" ng-change="addPercepcion()"> Este comprobante de pago acredita Percepción
+			    </label>
+			</div>
+		</div>
+	</div>
+	<div class="row" ng-if="divPercepcion">
+		
+		<div class="col-md-3">
+			<h2>Importe de la percepción en moneda nacional</h2>
+			<table class="table">
+				<tr>
+					<td>Importe Total</td>
+					<td>{{ Factura.importeTotal.toFixed(2) }}</td>
+				</tr>
+				<tr>
+					<td>Importe de percepción</td>
+					<td>{{ (Factura.importeTotal * 0.02).toFixed(2) }}</td>
+				</tr>
+				<tr>
+					<td>Importe Total cobrado</td>
+					<td>{{ (Factura.importeTotal + (Factura.importeTotal * 0.02)).toFixed(2) }}</td>
+				</tr>
+			</table>
+			
+		</div>
+	</div>
 
 </div>

@@ -6,6 +6,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
     $scope.unidad_medida = $scope.unidadesDeMedida[0];
 
     $scope.Factura = {};
+    $scope.Factura.tipoDocumento = "01";
     $scope.detalles = [];
 
     $scope.searchDocumento = function (numero) {
