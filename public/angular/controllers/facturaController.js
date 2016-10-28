@@ -15,6 +15,8 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
                     $('#tipo_doc').val(response.data.tipo_doc);
                     $scope.nombre = response.data.clientes[0].nombre;
                     $scope.nuevoClientebtn = false;
+
+                    $scope.Factura.cliente = response.data;
                 }
                 else{
                     $scope.nombre = "";
@@ -34,12 +36,14 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
                 'tipo_doc':$scope.tipo_doc.codigo,
                 'nombre':$scope.nombre
             }).then(function successCallback(response) {
-                if (response.data) {
+                if (response.data.hasOwnProperty('tipo_doc')) {
                     swal('', 'Se ha guardado el nuevo Cliente', 'success');
                     $scope.nuevoClientebtn = false;
                 }
                 else
                     swal('', 'El número de documento de identidad ya está registrado', 'error');
+
+                $scope.Factura.cliente = response.data;
             }, function errorCallback(response) {
                 
                  swal('', 'Algo anda mal :(', 'error');
@@ -58,15 +62,11 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
 
     $scope.getInformation = function () {
         $http.get('../information').then(function successCallback(response) {
-                $scope.information = response.data;
+                $scope.Factura.information = response.data;
             }, function errorCallback(response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.
             });
-    }
-
-    $scope.desenfoqueBusqueda = function () {
-        
     }
 
     $scope.mostrarLista = function () {
@@ -86,7 +86,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
 
         if ($scope.Producto.tasa_isc != null)
             afectacion_isc = $scope.Producto.valor_unitario * $scope.Producto.tasa_isc * $scope.cantidad;
-        else 
+        else
             afectacion_isc = 0;
 
         if ($scope.Producto.codigo != "")

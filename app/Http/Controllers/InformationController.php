@@ -12,8 +12,10 @@ class InformationController extends Controller
     public function index()
     {
         $data = Information::all();
-
-        return response()->json($data[0]);
+        $data = $data[0];
+        $data->domicilio;
+        $data->identidadDocumento;
+        return response()->json($data);
     }
 
     /**

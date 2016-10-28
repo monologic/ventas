@@ -31,7 +31,7 @@ class IdentidadDocumentoController extends Controller
             $cCliente = new ClienteController();
             $ret = $cCliente->store($request, $data->id);        
 
-            return response()->json( true );
+            return $this->getDocumento($data->numero);
         }
         else
             return response()->json( false );
@@ -73,6 +73,9 @@ class IdentidadDocumentoController extends Controller
         if (count($di) > 0) {
             $di = $di[0];
             $di->clientes;
+            $di->clientes->each(function($data){
+                $data->domicilio;
+            });
         }
 
         return response()->json( $di );
