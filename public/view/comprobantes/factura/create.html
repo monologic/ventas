@@ -102,7 +102,6 @@
 		</div>
 	</div>
 	<div class="row" ng-if="divPercepcion">
-		
 		<div class="col-md-3">
 			<h2>Importe de la percepción en moneda nacional</h2>
 			<table class="table">
@@ -112,15 +111,44 @@
 				</tr>
 				<tr>
 					<td>Importe de percepción</td>
-					<td>{{ (Factura.importeTotal * 0.02).toFixed(2) }}</td>
+					<td>{{ (Factura.percepcion.monto).toFixed(2) }}</td>
 				</tr>
 				<tr>
 					<td>Importe Total cobrado</td>
-					<td>{{ (Factura.importeTotal + (Factura.importeTotal * 0.02)).toFixed(2) }}</td>
+					<td>{{ (Factura.percepcion.monto_total).toFixed(2) }}</td>
 				</tr>
 			</table>
-			
 		</div>
 	</div>
-
+	<div class="row">
+		<div>
+			<div class="checkbox">
+			    <label>
+			      	<input type="checkbox" ng-model="divDetraccion" ng-change="addDetraccion()"> Este comprobante de pago acredita Detracción
+			    </label>
+			</div>
+		</div>
+	</div>
+	<div class="row" ng-if="divDetraccion">
+		<div class="col-md-3">
+			<h2>Detracciones</h2>
+			<form ng-submit="storeCliente()">
+			  	<div class="form-group">
+			    	<label for="">Porcentaje de la detracción (decimales)</label>
+			    	<input type="number" class="form-control" placeholder="ejemplo 0.2" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" ng-model="porc_detracc" ng-blur="calcularMontoDetraccion()" required>
+			  	</div>
+			  	<div class="form-group">
+			    	<label for="tipo_doc">Número de Cuenta en el Banco de la Nación</label>
+			    	<input type="text" class="form-control" id="nombre" placeholder="" ng-model="numero_cuenta" required>
+			  	</div>
+			  	<div class="form-group">
+			    	<label for="nombre">Monto de la detracción</label>
+			    	<label for="nombre">{{ (Factura.detraccion.monto).toFixed(2) }}</label>
+			  	</div>
+			  	<div ng-if="nuevoClientebtn">
+			  		<button type="submit" class="btn btn-primary">Guardar</button>
+			  	</div>
+			</form>
+		</div>
+	</div>
 </div>

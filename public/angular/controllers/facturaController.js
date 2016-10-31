@@ -163,6 +163,27 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
         $scope.Factura.importeTotal = $scope.Factura.totalValorVenta + $scope.Factura.totalIsc + $scope.Factura.totalIgv;
     }
 
+     $scope.addPercepcion = function () {
+        if ($scope.divPercepcion) {
+            $scope.Factura.percepcion = {
+                codigo: "2001",
+                base_imponible: $scope.Factura.importeTotal,
+                monto: $scope.Factura.importeTotal * 0.02,
+                monto_total: $scope.Factura.importeTotal * 1.02
+            }
+        }
+        else {
+            if ($scope.Factura.hasOwnProperty('percepcion'))
+                delete $scope.Factura.percepcion;
+        }
+        //console.log($scope.Factura);
+    }
+
+    $scope.calcularMontoDetraccion = function () {
+        alert($scope.porc_detracc);
+        $scope.Factura.detraccion.monto = $scope.Factura.calcularImporteTotal * $scope.porc_detracc;
+    }
+
     $scope.store = function () {
         $http.post('../facturas',
             {   'descripcion':$scope.descripcion,
