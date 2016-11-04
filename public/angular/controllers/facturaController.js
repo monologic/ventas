@@ -232,7 +232,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
                 $scope.Factura.version_doc = '1.0';
 
                 monto_letras = covertirNumLetras($scope.Factura.importeTotal+"");
-
+                monto_letras.trim();
                 $scope.Factura.leyendas = [];
                 $scope.Factura.leyendas.push({
                     codigo: "1000",
@@ -249,10 +249,10 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
     }
 
     $scope.store = function (facturaJson) {
-        $http.post('../factura',
+        $http.post('../comprobante',
             {   'json': facturaJson
             }).then(function successCallback(response) {
-                $scope.clean();
+                //$scope.clean();
 
                 swal({  title: "Perfecto!",
                         text: "Ha creado un nuevo registro",

@@ -22,8 +22,10 @@ class ComprobanteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $idDoc)
+    public function store(Request $request)
     {
+    	$factura = json_decode($request->json, true);
+		dd($factura);
         $data = new Comprobante();
         
         $data->save();
