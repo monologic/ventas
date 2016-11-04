@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="{{asset('assets/jqvmap/dist/jqvmap.min.css')}}" />
     <!-- Custom Theme Style -->
     <link rel="stylesheet" href="{{asset('assets/build/css/custom.min.css')}}" />
+    <!-- jQuery -->
+    <script src="{{asset('assets/jquery/dist/jquery.min.js')}}"></script>
     <!-- Sweet Alert -->
     <script src="{{ asset('assets/SweetAlert/sweetalert.min.js') }}"></script> 
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/SweetAlert/sweetalert.css') }}">
@@ -221,8 +223,7 @@
       </div>
     </div>
 
-    <!-- jQuery -->
-        <script src="{{asset('assets/jquery/dist/jquery.min.js')}}"></script>
+        
         <!-- angular -->
         <script src="{{asset('angular/angular.min.js')}}"></script>
         <script src="{{asset('angular/angular-route.min.js')}}"></script>

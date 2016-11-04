@@ -21,3 +21,5 @@ Route::resource('identidadDocumentos', 'IdentidadDocumentoController');
 Route::get('getDocumento/{numero}', 'IdentidadDocumentoController@getDocumento');
 
 Route::resource('information', 'InformationController');
+
+Route::resource('comprobante', 'ComprobanteController');

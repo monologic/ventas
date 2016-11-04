@@ -225,26 +225,32 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
     }
 
     $scope.terminarFactura = function () {
-        $scope.Factura.moneda = 'PEN';
-        $scope.Factura.version_UBL = '2.0';
-        $scope.Factura.version_doc = '1.0';
+        if ($scope.Factura.hasOwnProperty('cliente')) {
+            if ($scope.Factura.hasOwnProperty('detalles')) {
+                $scope.Factura.moneda = 'PEN';
+                $scope.Factura.version_UBL = '2.0';
+                $scope.Factura.version_doc = '1.0';
 
-        monto_letras = covertirNumLetras($scope.Factura.importeTotal+"");
+                monto_letras = covertirNumLetras($scope.Factura.importeTotal+"");
 
-        $scope.Factura.leyendas = [];
-        $scope.Factura.leyendas.push({
-            codigo: "1000",
-            monto_letras: monto_letras
-        });
-
-        console.log($scope.Factura);
+                $scope.Factura.leyendas = [];
+                $scope.Factura.leyendas.push({
+                    codigo: "1000",
+                    monto_letras: monto_letras
+                });
+                //alert(JSON.stringify($scope.Factura));
+                $scope.store(JSON.stringify($scope.Factura));
+            }
+            else
+                swal("Faltan datos!", "La factura debería tener por lo menos un detalle.", "warning");
+        }
+        else
+            swal("Faltan datos!", "Falta información del cliente.", "warning");
     }
 
-    $scope.store = function () {
-        $http.post('../facturas',
-            {   'descripcion':$scope.descripcion,
-                'valor_unitario':$scope.val_unit,
-                'codigo':$scope.codigo
+    $scope.store = function (facturaJson) {
+        $http.post('../factura',
+            {   'json': facturaJson
             }).then(function successCallback(response) {
                 $scope.clean();
 
