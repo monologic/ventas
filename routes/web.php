@@ -11,15 +11,21 @@
 |
 */
 
-Route::get('/', function () {
-    return view('dashboard');
+Auth::routes();
+
+Route::group(['middleware' => 'auth'], function () {
+
+	Route::get('/', 'HomeController@index');
+
+	Route::resource('productos', 'ProductoController');
+
+	Route::resource('identidadDocumentos', 'IdentidadDocumentoController');
+	Route::get('getDocumento/{numero}', 'IdentidadDocumentoController@getDocumento');
+
+	Route::resource('information', 'InformationController');
+
+	Route::resource('comprobante', 'ComprobanteController');
+
+	
+
 });
-
-Route::resource('productos', 'ProductoController');
-
-Route::resource('identidadDocumentos', 'IdentidadDocumentoController');
-Route::get('getDocumento/{numero}', 'IdentidadDocumentoController@getDocumento');
-
-Route::resource('information', 'InformationController');
-
-Route::resource('comprobante', 'ComprobanteController');

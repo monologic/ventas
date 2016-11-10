@@ -15,8 +15,12 @@
 		    	<input type="text" class="form-control" id="codigo" placeholder="Código del producto o servicio" ng-model="codigo">
 		  	</div>
 		  	<div class="form-group">
-		    	<label for="tasa_igv">Tasa IGV</label>
-		    	<input type="number" class="form-control" placeholder="Tasa del impuesto general a las ventas" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" ng-model="tasa_igv" required>
+		    	<label for="tasa_igv">Afectación IGV</label>
+		    	<select class="form-control" ng-model="afectacion_igv">
+		    		<option>Gravado</option>
+		    		<option>Exonerado</option>
+					<option>Inafecto</option>
+		    	</select>
 		  	</div>
 		  	<div class="form-group">
 		    	<label for="tasa_isc">Tasa ISC</label>
@@ -30,7 +34,7 @@
 					<option value="03">Sistema de Precios de Venta al Público</option>
 		    	</select>
 		  	</div>
-
+			
 		  	<button type="submit" class="btn btn-default">Guardar</button>
 		</form>
 	</div>

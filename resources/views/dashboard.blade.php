@@ -228,7 +228,8 @@
         <script src="{{asset('angular/angular.min.js')}}"></script>
         <script src="{{asset('angular/angular-route.min.js')}}"></script>
         <script src="{{asset('angular/main.js')}}"></script>
-
+        
+        <script src="{{asset('angular/controllers/homeController.js')}}"></script>
         <script src="{{asset('angular/controllers/productoController.js')}}"></script>
         <script src="{{asset('angular/controllers/facturaController.js')}}"></script>
 
