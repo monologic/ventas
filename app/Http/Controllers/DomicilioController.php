@@ -26,6 +26,8 @@ class DomicilioController extends Controller
     {
         $data = new Domicilio($request->all());
         $data->save();
+
+        return $data->id; 
     }
 
     /**

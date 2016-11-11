@@ -34,10 +34,15 @@ class IdentidadDocumentoController extends Controller
             return $this->getDocumento($data->numero);
         }
         else
-            return response()->json( false );
+            return response()->json( false ); 
+    }
 
+    public function store2(Request $request)
+    {
+        $data = new IdentidadDocumento($request->all());
+        $data->save();
 
-        
+        return $data->id; 
     }
 
     /**

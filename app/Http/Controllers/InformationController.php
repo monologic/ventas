@@ -28,7 +28,16 @@ class InformationController extends Controller
      */
     public function store(Request $request)
     {
+        $cID = new IdentidadDocumentoController();
+        $identidad_documento_id = $cID->store2($request); //Recibe el id del documento de identidad guardado
+
+        $cDom = new DomicilioController();
+        $domicilio_id = $cDom->store($request); //Recibe el id del documento de identidad guardado
+
         $data = new Information($request->all());
+        $data->identidad_documento_id = $identidad_documento_id;
+        $data->domicilio_id = $domicilio_id;
+
         $data->save();
     }
 

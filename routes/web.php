@@ -26,6 +26,6 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::resource('comprobante', 'ComprobanteController');
 
-	
+	Route::resource('departamentos', 'DepartamentoController');
 
 });

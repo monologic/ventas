@@ -10,7 +10,7 @@ class Information extends Model
 
     public $timestamps = false;
 
-	protected $fillable = ['firma_digital', 'nombre', 'combre_comercial', 'domicilio_id', 'identidad_documento_id'];
+	protected $fillable = ['firma_digital', 'nombre', 'nombre_comercial', 'domicilio_id', 'identidad_documento_id', 'igv', 'agente_percep', 'agente_retencion'];
 
 	public function domicilio()
 	{

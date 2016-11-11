@@ -1,4 +1,69 @@
-<div ng-controller="homeController" ng-init="getInformation()">
-	<h1>Bienvenido/a</h1>
-	<div></div>
+<div ng-controller="homeController" ng-init="getInformation();getDepartamentos();">
+	<h1>Bienvenido/a al sistema</h1>
+	<p>Debes configurar unas cosas antes de empezar.</p>
+	<div ng-if="divConfiguration">
+		<form ng-submit="store()">
+		  	<div class="form-group">
+		    	<label for="nombre">Apellidos y nombres, denominación o razón social</label>
+		    	<input type="text" class="form-control" id="nombre" ng-model="information.nombre" placeholder="" required>
+		  	</div>
+		  	<div class="form-group">
+		    	<label for="nombre_comercial">Nombre comercial</label>
+		    	<input type="text" class="form-control" id="nombre_comercial" ng-model="information.nombre_comercial" placeholder="">
+		  	</div>
+		  	<div class="form-group">
+			    	<label for="numero_di">Número de documento de identidad</label>
+			    	<input type="text" class="form-control" placeholder=""  maxlength="11" pattern="[0-9]{8,11}" ng-model="information.numero" required>
+			  	</div>
+		  	<div class="form-group">
+		    	<label for="tipo_doc">Tipo de documento de identidad</label>
+		    	<select class="form-control" ng-options="di.descripcion for di in documentoTipos track by di.codigo" ng-model="information.tipo_doc" id="tipo_doc" required></select>
+		  	</div>
+		  	<div class="form-group">
+		    	<label for="nombre_comercial">Firma digital</label>
+		    	<textarea class="form-control" rows="3" ng-model="information.firma_digital" required></textarea>
+		  	</div>
+		  	<h5>Marque si corresponde</h5>
+		  	<div class="checkbox">
+			    <label>
+			     	<input type="checkbox" ng-model="information.agente_percep"> Es agente de percepción
+			    </label>
+			</div>
+			<div class="checkbox">
+			    <label>
+			     	<input type="checkbox" ng-model="information.agente_retencion"> Es agente de retención
+			    </label>
+			</div>
+			<hr>
+			<h4>Domicilio fiscal</h4>
+			<div class="form-group">
+		    	<label for="">Código de ubigeo</label>
+		    	<input type="text" class="form-control" id="" ng-model="information.cod_ubigeo" placeholder="" required>
+		  	</div>
+		  	<div class="form-group">
+		    	<label for="">Dirección completa</label>
+		    	<input type="text" class="form-control" id="" ng-model="information.direccion_completa" placeholder="" required>
+		  	</div>
+		  	<div class="form-group">
+		    	<label for="">Urbanización</label>
+		    	<input type="text" class="form-control" id="" ng-model="information.urbanizacion" placeholder="" required>
+		  	</div>
+		  	<div class="form-group">
+		    	<label for="">Departamento</label>
+		    	<select class="form-control" id="nivel" ng-model="information.departamento" name="departamento" ng-options="departamento.departamento for departamento in departamentos" ng-change="selectDepartamento()" required>
+				</select>
+		  	</div>
+		  	<div class="form-group">
+		    	<label for="">Provincia</label>
+		    	<select class="form-control" id="nivel" ng-disabled="!information.departamento" ng-model="information.provincia" name="provincia" ng-options="provincia.provincia for provincia in provincias" ng-change="selectProvincia()" required>
+				</select>
+		  	</div>
+		  	<div class="form-group">
+		    	<label for="">Distrito</label>
+		    	<select class="form-control" id="nivel" ng-disabled="!information.provincia" ng-model="information.distrito" name="distrito" ng-options="distrito.distrito for distrito in distritos" required>
+				</select>
+		  	</div>
+		  	<button type="submit" class="btn btn-default">Guardar</button>
+		</form>
+	</div>
 </div>
