@@ -1,7 +1,8 @@
 <div ng-controller="homeController" ng-init="getInformation();getDepartamentos();">
 	<h1>Bienvenido/a al sistema</h1>
-	<p>Debes configurar unas cosas antes de empezar.</p>
+	
 	<div ng-if="divConfiguration">
+		<p>Debes configurar unas cosas antes de empezar.</p>
 		<form ng-submit="store()">
 		  	<div class="form-group">
 		    	<label for="nombre">Apellidos y nombres, denominación o razón social</label>

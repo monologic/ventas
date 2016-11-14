@@ -56,6 +56,9 @@ app.controller('homeController', function($scope, $http, tipoDocumento) {
                         type: "success",   
                         confirmButtonText: "Aceptar",   
                         closeOnConfirm: true
+                    },
+                    function(){
+                        window.location.reload();
                     });
             }, function errorCallback(response) {
             // called asynchronously if an error occurs
