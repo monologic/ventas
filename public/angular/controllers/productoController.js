@@ -71,8 +71,8 @@ app.controller('productoController', function($scope, $http) {
         $scope.afectacion_igv = data.afectacion_igv;
         $scope.tasa_isc =  parseFloat(data.tasa_isc);
         $scope.cod_tipo_sistema_isc =  data.cod_tipo_sistema_isc;
-        $('#tasa_percep').val(data.tasa_percep);
-        $scope.tasa_detracc = data.tasa_detracc;
+        $('#tasa_percep').val(parseFloat(data.tasa_percep));
+        $scope.tasa_detracc = parseFloat(data.tasa_detracc);
     }
 
     $scope.update = function () {
