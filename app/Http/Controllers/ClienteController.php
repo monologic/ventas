@@ -27,6 +27,8 @@ class ClienteController extends Controller
     {
         $data = new Cliente();
         $data->nombre = $request->nombre;
+        $data->agente_percep = $request->agente_percep;
+        $data->agente_retencion = $request->agente_retencion;
         $data->identidad_documento_id = $idDoc;
         $data->save();
 

@@ -37,7 +37,7 @@ app.controller('homeController', function($scope, $http, tipoDocumento) {
     }
 
     $scope.store = function () {
-
+        $scope.information.comprobante_percepcion = $('#comprobante_percepcion').prop('checked');
         $scope.information.agente_percep = ($scope.information.agente_percep == undefined) ? false : $scope.information.agente_percep;
         $scope.information.agente_retencion = ($scope.information.agente_retencion == undefined) ? false : $scope.information.agente_percep;
 

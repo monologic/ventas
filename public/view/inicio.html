@@ -30,6 +30,11 @@
 			     	<input type="checkbox" ng-model="information.agente_percep"> Es agente de percepción
 			    </label>
 			</div>
+			<div class="checkbox" ng-if="information.agente_percep">
+			    <label>
+			     	<input type="checkbox" ng-model="information.comprobante_percepcion" id="comprobante_percepcion"> Emite comprobante de Percepción
+			    </label>
+			</div>
 			<div class="checkbox">
 			    <label>
 			     	<input type="checkbox" ng-model="information.agente_retencion"> Es agente de retención

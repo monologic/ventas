@@ -8,7 +8,7 @@ class Cliente extends Model
 {
     public $timestamps = false;
 
-	protected $fillable = ['nombre', 'identidad_documento_id', 'domicilio_id'];
+	protected $fillable = ['nombre', 'identidad_documento_id', 'domicilio_id', 'agente_percep', 'agente_retencion'];
 
 	public function comprobantes()
 	{

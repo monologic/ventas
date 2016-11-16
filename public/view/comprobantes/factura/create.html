@@ -14,8 +14,18 @@
 			  	<div class="form-group">
 			    	<label for="nombre">Apellidos y nombres, denominación o razón social</label>
 			    	<input type="text" class="form-control" id="nombre" placeholder="" ng-model="nombre" required>
-			  	</div>
+			  	</div>  	
 			  	<div ng-if="nuevoClientebtn">
+				  	<div class="checkbox">
+					    <label>
+					     	<input type="checkbox" ng-model="agente_percep" id="agente_percep"> Es agente de percepción
+					    </label>
+					</div>
+					<div class="checkbox">
+					    <label>
+					     	<input type="checkbox" ng-model="agente_retencion" id="agente_retencion"> Es agente de retención
+					    </label>
+					</div>
 			  		<button type="submit" class="btn btn-primary">Guardar Nuevo Cliente</button>
 			  	</div>
 			</form>
@@ -90,15 +100,6 @@
 					</tr>
 				</tbody>
 			</table>
-		</div>
-	</div>
-	<div class="row">
-		<div>
-			<div class="checkbox">
-			    <label>
-			      	<input type="checkbox" ng-model="divPercepcion" ng-change="addPercepcion()"> Este comprobante de pago acredita Percepción
-			    </label>
-			</div>
 		</div>
 	</div>
 	<div class="row" ng-if="divPercepcion">

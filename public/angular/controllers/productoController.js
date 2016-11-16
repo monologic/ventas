@@ -1,7 +1,7 @@
 app.controller('productoController', function($scope, $http) {
 
     $scope.afectacion_igv = "Gravado";
-    $scope.tasa_percep = 0.2;
+    $scope.tasa_percep = 0.02;
 
     $scope.getInformation = function () {
         $http.get('information').then(function successCallback(response) {
@@ -13,7 +13,11 @@ app.controller('productoController', function($scope, $http) {
     }
 
     $scope.store = function () {
-        
+
+        tasa_percep = (parseFloat($('#tasa_percep').val()) == 0) ? null : parseFloat($('#tasa_percep').val());
+        $scope.tasa_isc = ( $scope.tasa_isc == 0 ) ? null : $scope.tasa_isc;
+        $scope.cod_tipo_sistema_isc = ($scope.tasa_isc == null || $scope.tasa_isc == 0) ? null : $scope.cod_tipo_sistema_isc;
+
     	$http.post('../productos',
             {   'descripcion':$scope.descripcion,
                 'valor_unitario':$scope.val_unit,
@@ -21,7 +25,7 @@ app.controller('productoController', function($scope, $http) {
                 'afectacion_igv':$scope.afectacion_igv,
                 'tasa_isc':$scope.tasa_isc,
                 'cod_tipo_sistema_isc':$scope.cod_tipo_sistema_isc,
-                'tasa_percep':parseFloat($('#tasa_percep').val()),
+                'tasa_percep':tasa_percep,
                 'tasa_detracc':$scope.tasa_detracc
             }).then(function successCallback(response) {
                 $scope.clean();
@@ -48,7 +52,7 @@ app.controller('productoController', function($scope, $http) {
         $scope.val_unit = "";
         $scope.codigo = "";
         $scope.tasa_isc = "";
-        $scope.tasa_percep = 0.2;
+        $scope.tasa_percep = 0.02;
         $scope.tasa_detracc = "";
         $scope.afectacion_igv = "Gravado";
     }
