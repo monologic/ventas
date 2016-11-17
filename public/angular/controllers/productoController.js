@@ -1,4 +1,7 @@
-app.controller('productoController', function($scope, $http) {
+app.controller('productoController', function($scope, $http, unidadesDeMedida) {
+
+    $scope.unidadesDeMedida = unidadesDeMedida;
+    $scope.unidad_medida = $scope.unidadesDeMedida[0];
 
     $scope.afectacion_igv = "Gravado";
     $scope.tasa_percep = 0.02;
@@ -22,6 +25,7 @@ app.controller('productoController', function($scope, $http) {
             {   'descripcion':$scope.descripcion,
                 'valor_unitario':$scope.val_unit,
                 'codigo':$scope.codigo,
+                'unidad_medida':$scope.unidad_medida.codigo,
                 'afectacion_igv':$scope.afectacion_igv,
                 'tasa_isc':$scope.tasa_isc,
                 'cod_tipo_sistema_isc':$scope.cod_tipo_sistema_isc,

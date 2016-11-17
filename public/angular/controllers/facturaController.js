@@ -2,8 +2,6 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
 
     $scope.documentoTipos = tipoDocumento;
     $scope.tipo_doc = $scope.documentoTipos[3];
-    $scope.unidadesDeMedida = unidadesDeMedida;
-    $scope.unidad_medida = $scope.unidadesDeMedida[0];
 
     $scope.Factura = {};
     $scope.Factura.tipoDocumento = "01";
@@ -116,7 +114,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
             percepcion: $scope.Producto.tasa_percep,
             detraccion: $scope.Producto.tasa_detracc,
             afectacion: $scope.Producto.afectacion_igv,
-            unidad_medida: $scope.unidad_medida, 
+            unidad_medida: $scope.Producto.unidad_medida, 
             cantidad: $scope.cantidad,
             descripcion: $scope.Producto.descripcion,
             valor_unitario:$scope.Producto.valor_unitario,
@@ -306,50 +304,70 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
     }
 
     $scope.calcularPercepcion = function () {
-        var base_imponible = 0;
-        var totalPercepcion = 0;
 
-        clienteAgentePercep = $scope.Factura.cliente.clientes[0].agente_percep;
-        clienteAgenteRetencion = $scope.Factura.cliente.clientes[0].agente_retencion;
+        if ($scope.Factura.information.agente_percep == 1) {
 
-        if (clienteAgenteRetencion == 0) {
-            if (clienteAgentePercep == 0 || clienteAgentePercep == null) {
-                for (i in $scope.detalles) {
-                    if ($scope.detalles[i].afectacion == "Gravado") {
-                        //Calculando Percepcion por Item
-                        if ($scope.detalles[i].percepcion != null || $scope.detalles[i].percepcion != 0) {
-                            total = $scope.detalles[i].valor_venta + $scope.detalles[i].afectacion_igv.monto + $scope.detalles[i].afectacion_isc.monto;
-                            base_imponible += total;
-                            montoPercep = total * $scope.detalles[i].percepcion;
-                            totalPercepcion += montoPercep;
+            var base_imponible = 0;
+            var totalPercepcion = 0;
+
+            clienteAgentePercep = $scope.Factura.cliente.clientes[0].agente_percep;
+            clienteAgenteRetencion = $scope.Factura.cliente.clientes[0].agente_retencion;
+
+            if (clienteAgenteRetencion == 0) {
+                if (clienteAgentePercep == 0 || clienteAgentePercep == null) {
+                    for (i in $scope.detalles) {
+                        if ($scope.detalles[i].afectacion == "Gravado") {
+                            //Calculando Percepcion por Item
+                            if ($scope.detalles[i].percepcion != null || $scope.detalles[i].percepcion != 0) {
+                                total = $scope.detalles[i].valor_venta + $scope.detalles[i].afectacion_igv.monto + $scope.detalles[i].afectacion_isc.monto;
+                                base_imponible += total;
+                                montoPercep = total * $scope.detalles[i].percepcion;
+                                totalPercepcion += montoPercep;
+                            }
                         }
                     }
                 }
-            }
-            else {
-                for (i in $scope.detalles) {
+                else {
+                    for (i in $scope.detalles) {
 
-                    if ($scope.detalles[i].afectacion == "Gravado") {
-                        console.log($scope.detalles[i]);
-                        if ($scope.detalles[i].percepcion != null) {
-                            total = $scope.detalles[i].valor_venta + $scope.detalles[i].afectacion_igv.monto + $scope.detalles[i].afectacion_isc.monto;
-                            base_imponible += total;
-                            montoPercep = total * 0.005;
-                            totalPercepcion += montoPercep;
+                        if ($scope.detalles[i].afectacion == "Gravado") {
+                            console.log($scope.detalles[i]);
+                            if ($scope.detalles[i].percepcion != null) {
+                                total = $scope.detalles[i].valor_venta + $scope.detalles[i].afectacion_igv.monto + $scope.detalles[i].afectacion_isc.monto;
+                                base_imponible += total;
+                                montoPercep = total * 0.005;
+                                totalPercepcion += montoPercep;
+                            }
                         }
                     }
                 }
-            }
 
-            if (totalPercepcion != 0) {
-                $scope.divPercepcion = true;
-                $scope.Factura.percepcion = {
-                    codigo: "2001",
-                    base_imponible: base_imponible,
-                    monto: totalPercepcion,
-                    monto_total: $scope.Factura.importeTotal + totalPercepcion
+                if (totalPercepcion != 0) {
+                    $scope.divPercepcion = true;
+                    $scope.Factura.percepcion = {
+                        codigo: "2001",
+                        base_imponible: base_imponible,
+                        monto: totalPercepcion,
+                        monto_total: $scope.Factura.importeTotal + totalPercepcion
+                    }
                 }
             }
+        }
+        else {
+            $scope.calcularRetencion();
+        }
+
+    }
+
+    $scope.calcularRetencion = function () {
+       
+        agentePercep = $scope.Factura.information.agente_percep;
+        agenteRetencion = $scope.Factura.information.agente_retencion;
+
+        if (agenteRetencion == 0) {
+            importeGravado = $scope.Factura.totalValorVenta[0].monto + $scope.Factura.totalIsc.monto + $scope.Factura.totalIgv.monto;
+            monto = importeGravado * 0.03;
+            importeTotal = $scope.Factura.importeTotal = monto;
         }
     }
 
