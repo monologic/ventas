@@ -254,53 +254,39 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
     $scope.calcularImporteTotal = function () {
         $scope.Factura.importeTotal = $scope.Factura.totalValorVenta[0].monto + $scope.Factura.totalValorVenta[1].monto + $scope.Factura.totalValorVenta[2].monto + $scope.Factura.totalIsc.monto + $scope.Factura.totalIgv.monto;
         //console.log($scope.Factura);
-        $scope.calcularPercepcion();
+        $scope.calcularDetraccion();
     }
 
     $scope.calcularDetraccion = function () {
-        var base_imponible = 0;
-        var totalPercepcion = 0;
-
-        clienteAgentePercep = $scope.Factura.cliente.clientes[0].agente_percep;
-
-        if (clienteAgentePercep == 0 || clienteAgentePercep == null) {
-            for (i in $scope.detalles) {
-                if ($scope.detalles[i].afectacion == "Gravado") {
-                    //Calculando Percepcion por Item
-                    if ($scope.detalles[i].percepcion != null || $scope.detalles[i].percepcion != 0) {
-                        total = $scope.detalles[i].valor_venta + $scope.detalles[i].afectacion_igv.monto + $scope.detalles[i].afectacion_isc.monto;
-                        base_imponible += total;
-                        montoPercep = total * $scope.detalles[i].percepcion;
-                        totalPercepcion += montoPercep;
+        $scope.Factura.detraccion = [];
+        for (i in $scope.detalles) {
+            if ($scope.detalles[i].detraccion != null) {
+                
+                total = $scope.detalles[i].valor_venta + $scope.detalles[i].afectacion_igv.monto + $scope.detalles[i].afectacion_isc.monto;
+                if (total > 700) {
+                    montoDetraccion = total * $scope.detalles[i].detraccion;
+                    monto = {
+                        codigo: "2003",
+                        porcentaje: $scope.detalles[i].detraccion,
+                        monto: montoDetraccion,
+                        numero_cuenta: ""
                     }
+                    $scope.Factura.detraccion.push(monto);
                 }
             }
-        }
-        else {
-            for (i in $scope.detalles) {
-
-                if ($scope.detalles[i].afectacion == "Gravado") {
-                    console.log($scope.detalles[i]);
-                    if ($scope.detalles[i].percepcion != null) {
-                        total = $scope.detalles[i].valor_venta + $scope.detalles[i].afectacion_igv.monto + $scope.detalles[i].afectacion_isc.monto;
-                        base_imponible += total;
-                        montoPercep = total * 0.005;
-                        totalPercepcion += montoPercep;
-                    }
-                }
-            }
-        }
-
-        if (totalPercepcion != 0) {
-            $scope.divPercepcion = true;
-            $scope.Factura.percepcion = {
-                codigo: "2001",
-                base_imponible: base_imponible,
-                monto: totalPercepcion,
-                monto_total: $scope.Factura.importeTotal + totalPercepcion
-            }
-        }
+        }  
         
+        if ($scope.Factura.detraccion.length == 0) {
+            $scope.calcularPercepcion();
+        }
+        else{
+            $scope.divDetraccion = true;
+            $scope.totalDetracc = 0;
+            for (var i = 0; i < $scope.Factura.detraccion.length; i++) {
+                $scope.totalDetracc += $scope.Factura.detraccion[i].monto;
+            }
+        }
+
     }
 
     $scope.calcularPercepcion = function () {
@@ -318,7 +304,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
                     for (i in $scope.detalles) {
                         if ($scope.detalles[i].afectacion == "Gravado") {
                             //Calculando Percepcion por Item
-                            if ($scope.detalles[i].percepcion != null || $scope.detalles[i].percepcion != 0) {
+                            if ($scope.detalles[i].percepcion != null) {
                                 total = $scope.detalles[i].valor_venta + $scope.detalles[i].afectacion_igv.monto + $scope.detalles[i].afectacion_isc.monto;
                                 base_imponible += total;
                                 montoPercep = total * $scope.detalles[i].percepcion;
@@ -367,37 +353,17 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
         if (agenteRetencion == 0) {
             importeGravado = $scope.Factura.totalValorVenta[0].monto + $scope.Factura.totalIsc.monto + $scope.Factura.totalIgv.monto;
             monto = importeGravado * 0.03;
-            importeTotal = $scope.Factura.importeTotal = monto;
+            importeTotal = $scope.Factura.importeTotal - monto;
+
+            $scope.Factura.retencion = {
+                importeGravado: importeGravado,
+                monto:  monto,
+                importeTotal:importeTotal,
+            }
+            console.log($scope.Factura.retencion);
         }
     }
 
-    $scope.addPercepcion = function () {
-        if ($scope.divPercepcion) {
-            $scope.Factura.percepcion = {
-                codigo: "2001",
-                base_imponible: $scope.Factura.importeTotal,
-                monto: $scope.Factura.importeTotal * 0.02,
-                monto_total: $scope.Factura.importeTotal * 1.02
-            }
-        }
-        //console.log($scope.Factura);
-    }
-
-    $scope.addDetraccion = function () {
-        if ($scope.divDetraccion) {
-            $scope.Factura.detraccion = {
-                codigo: "2003",
-                porcentaje: 0,
-                monto: 0,
-                numero_cuenta: $scope.Factura.importeTotal * 1.02
-            }
-        }
-        else {
-            if ($scope.Factura.hasOwnProperty('detraccion'))
-                delete $scope.Factura.detraccion;
-        }
-        //console.log($scope.Factura);
-    }
 
     $scope.calcularMontoDetraccion = function () {
         $scope.Factura.detraccion.monto = $scope.Factura.importeTotal * $('#porc_detracc').val();
@@ -405,10 +371,11 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
 
     $scope.addDataDetraccion = function () {
 
-        $scope.Factura.detraccion.porcentaje = $('#porc_detracc').val();
-        $scope.Factura.detraccion.numero_cuenta = $('#numero_cuenta').val();
+         for (var i = 0; i < $scope.Factura.detraccion.length; i++) {
+            $scope.Factura.detraccion[i].numero_cuenta = $('#numero_cuenta').val();;
+        }
 
-        //console.log($scope.Factura.detraccion);
+        console.log($scope.Factura);
     }
 
     $scope.terminarFactura = function () {

@@ -115,33 +115,31 @@
 			</table>
 		</div>
 	</div>
-	<div class="row">
-		<div>
-			<div class="checkbox">
-			    <label>
-			      	<input type="checkbox" ng-model="divDetraccion" ng-change="addDetraccion()"> Este comprobante de pago acredita Detracción
-			    </label>
-			</div>
-		</div>
-	</div>
 	<div class="row" ng-if="divDetraccion">
 		<div class="col-md-3">
 			<h2>Detracciones</h2>
+			<h2>Monto de la detracción</h2>
+			<table class="table">
+				<tr>
+					<td>Importe Total</td>
+					<td>{{ Factura.importeTotal.toFixed(2) }}</td>
+				</tr>
+				<tr>
+					<td>Monto de detracción (a depositar)</td>
+					<td>{{ totalDetracc.toFixed(2) }}</td>
+				</tr>
+				<tr>
+					<td>Importe Total cobrado</td>
+					<td>{{ (Factura.importeTotal - totalDetracc).toFixed(2) }}</td>
+				</tr>
+			</table>
 			<form ng-submit="addDataDetraccion()">
-			  	<div class="form-group">
-			    	<label for="">Porcentaje de la detracción (decimales)</label>
-			    	<input type="text" class="form-control" placeholder="ejemplo 0.2" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" id="porc_detracc" ng-model="porc_detracc" ng-blur="calcularMontoDetraccion()" required>
-			  	</div>
 			  	<div class="form-group">
 			    	<label for="tipo_doc">Número de Cuenta en el Banco de la Nación</label>
 			    	<input type="text" class="form-control" placeholder="" id="numero_cuenta" ng-model="numero_cuenta" required>
 			  	</div>
 			  	<div class="form-group">
-			    	<label for="nombre">Monto de la detracción: </label>
-			    	<label for="nombre" style="font-size: 20px">{{ (Factura.detraccion.monto).toFixed(2) }}</label>
-			  	</div>
-			  	<div class="form-group">
-			  		<button type="submit" class="btn btn-primary">Guardar Datos</button>
+			  		<button type="submit" class="btn btn-primary">Guardar</button>
 			  	</div>
 			</form>
 		</div>
