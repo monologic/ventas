@@ -277,6 +277,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
         }  
         
         if ($scope.Factura.detraccion.length == 0) {
+            delete $scope.Factura.detraccion;
             $scope.calcularPercepcion();
         }
         else{
@@ -291,13 +292,15 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
 
     $scope.calcularPercepcion = function () {
 
+        clienteAgentePercep = $scope.Factura.cliente.clientes[0].agente_percep; 
+        clienteAgenteRetencion = $scope.Factura.cliente.clientes[0].agente_retencion;
+
         if ($scope.Factura.information.agente_percep == 1) {
 
             var base_imponible = 0;
             var totalPercepcion = 0;
 
-            clienteAgentePercep = $scope.Factura.cliente.clientes[0].agente_percep;
-            clienteAgenteRetencion = $scope.Factura.cliente.clientes[0].agente_retencion;
+            
 
             if (clienteAgenteRetencion == 0) {
                 if (clienteAgentePercep == 0 || clienteAgentePercep == null) {
@@ -339,7 +342,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
                 }
             }
         }
-        else {
+        else if(clienteAgenteRetencion == 1) {
             $scope.calcularRetencion();
         }
 
@@ -351,6 +354,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
         agenteRetencion = $scope.Factura.information.agente_retencion;
 
         if (agenteRetencion == 0) {
+
             importeGravado = $scope.Factura.totalValorVenta[0].monto + $scope.Factura.totalIsc.monto + $scope.Factura.totalIgv.monto;
             monto = importeGravado * 0.03;
             importeTotal = $scope.Factura.importeTotal - monto;
