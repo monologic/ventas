@@ -266,10 +266,8 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
                 if (total > 700) {
                     montoDetraccion = total * $scope.detalles[i].detraccion;
                     monto = {
-                        codigo: "2003",
                         porcentaje: $scope.detalles[i].detraccion,
-                        monto: montoDetraccion,
-                        numero_cuenta: ""
+                        monto: montoDetraccion
                     }
                     $scope.Factura.detraccion.push(monto);
                 }
@@ -283,9 +281,31 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
         else{
             $scope.divDetraccion = true;
             $scope.totalDetracc = 0;
+            porcentaje = $scope.Factura.detraccion[0].porcentaje;
+            a = 0;
             for (var i = 0; i < $scope.Factura.detraccion.length; i++) {
                 $scope.totalDetracc += $scope.Factura.detraccion[i].monto;
+                if (porcentaje == $scope.Factura.detraccion[i].porcentaje)
+                    a++;
             }
+            if (a == $scope.Factura.detraccion.length) {
+                porcentaje = (parseFloat(porcentaje) * 100).toFixed(2);
+                porcentaje += "%";
+                $scope.Factura.detraccionTotal = {
+                    codigo: "2003",
+                    porcentaje: porcentaje,
+                    monto: $scope.totalDetracc,
+                    numero_cuenta: ""
+                }
+            }
+            else {
+                $scope.Factura.detraccionTotal = {
+                    codigo: "2003",
+                    monto: $scope.totalDetracc,
+                    numero_cuenta: ""
+                }
+            }
+
         }
 
     }
@@ -368,18 +388,11 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
         }
     }
 
-
-    $scope.calcularMontoDetraccion = function () {
-        $scope.Factura.detraccion.monto = $scope.Factura.importeTotal * $('#porc_detracc').val();
-    }
-
     $scope.addDataDetraccion = function () {
 
-         for (var i = 0; i < $scope.Factura.detraccion.length; i++) {
-            $scope.Factura.detraccion[i].numero_cuenta = $('#numero_cuenta').val();;
-        }
+        $scope.Factura.detraccionTotal.numero_cuenta = $('#numero_cuenta').val();
 
-        console.log($scope.Factura);
+        //console.log($scope.Factura);
     }
 
     $scope.terminarFactura = function () {
@@ -394,7 +407,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
                 $scope.Factura.leyendas = [];
                 $scope.Factura.leyendas.push({
                     codigo: "1000",
-                    monto_letras: monto_letras
+                    value: monto_letras
                 });
                 //alert(JSON.stringify($scope.Factura));
                 $scope.store(JSON.stringify($scope.Factura));
