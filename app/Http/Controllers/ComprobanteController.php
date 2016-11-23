@@ -121,6 +121,8 @@ class ComprobanteController extends Controller
             $value = $xml->createElement( "cbc:Value", $comprobante['detraccionTotal']['numero_cuenta'] );
             $AdProp->appendChild( $value );
 
+
+
         }
 
         foreach ($comprobante['leyendas'] as $i => $value) {
@@ -132,52 +134,136 @@ class ComprobanteController extends Controller
                 $AdProp->appendChild( $value );
         }
 
-
-
-
-        //$id = $xml->createElement( "cbc:ID", "The last symphony composed by Ludwig van Beethoven." );
+        $ublExtension2 = $xml->createElement( "ext:UBLExtension" );
+        $ublExtensions->appendChild( $ublExtension2 );
         
-/*
+            $ExtContent = $xml->createElement( "ext:ExtensionContent" );
+            $ublExtension2->appendChild( $ExtContent );
+        
+                $signature = $xml->createElement( "ds:Signature" );
+                $signature->setAttribute("Id", "SignatureCF");
+                $ExtContent->appendChild( $signature );
+                
+                    $signedInfo = $xml->createElement( "ds:SignedInfo" );
+                    $signature->appendChild( $signedInfo );
+                    
+                        $canonMethod = $xml->createElement( "ds:CanonicalizationMethod" );
+                        $canonMethod->setAttribute("Algorithm", "http://www.w3.org/TR/2001/REC-xml-c14n-20010315");
+                        $signedInfo->appendChild( $canonMethod );
+                        
+                        $signMethod = $xml->createElement( "ds:SignatureMethod" );
+                        $signMethod->setAttribute("Algorithm", "http://www.w3.org/2000/09/xmldsig#rsa-sha1");
+                        $signedInfo->appendChild( $signMethod );
 
-<sac:AdditionalMonetaryTotal>
-    <cbc:ID>2003</cbc:ID>
-    <cbc:PayableAmount currencyID="PEN">2208.96</cbc:PayableAmount>
-    <sac:Percent>9.00%</sac:Percent>
-</sac:AdditionalMonetaryTotal>
+                        $reference = $xml->createElement( "ds:Reference" );
+                        $reference->setAttribute("URI", "");
+                        $signedInfo->appendChild( $reference );
 
+                            $transforms = $xml->createElement( "ds:Transforms" );
+                            $reference->appendChild( $transforms );
 
-<sac:AdditionalMonetaryTotal>
-            <cbc:ID>2001</cbc:ID>
-            <cbc:PayableAmount currencyID="PEN">1427.10</cbc:PayableAmount>
-            <sac:TotalAmount currencyID="PEN">72782.09</sac:TotalAmount>
- </sac:AdditionalMonetaryTotal>
+                                $transform = $xml->createElement( "ds:Transform" );
+                                $transform->setAttribute("Algorithm", "http://www.w3.org/2000/09/xmldsig#envelopedsignature");
+                                $transforms->appendChild( $transform );
 
-            <sac:AdditionalInformation>
-                <sac:AdditionalMonetaryTotal>
-                    <cbc:ID>1001</cbc:ID>
-                    <cbc:PayableAmount currencyID="PEN">348199.15</cbc:PayableAmount>
-                </sac:AdditionalMonetaryTotal>
-                <sac:AdditionalMonetaryTotal>
-                    <cbc:ID>1003</cbc:ID>
-                    <cbc:PayableAmount currencyID="PEN">12350.00</cbc:PayableAmount>
-                </sac:AdditionalMonetaryTotal>
-                <sac:AdditionalMonetaryTotal>
-                    <cbc:ID>1004</cbc:ID>
-                    <cbc:PayableAmount currencyID="PEN">30.00</cbc:PayableAmount>
-                </sac:AdditionalMonetaryTotal>
-                <sac:AdditionalMonetaryTotal>
-                    <cbc:ID>2005</cbc:ID>
-                    <cbc:PayableAmount currencyID="PEN">59230.51</cbc:PayableAmount>
-                </sac:AdditionalMonetaryTotal>
-                <sac:AdditionalProperty>
-                    <cbc:ID>1000</cbc:ID>
-                    <cbc:Value>CUATROCIENTOS VEINTITRES MIL DOSCIENTOS VEINTICINCO Y 00/100</cbc:Value>
-                </sac:AdditionalProperty>
-            </sac:AdditionalInformation>
+                            $digestMethod = $xml->createElement( "ds:DigestMethod" );
+                            $digestMethod->setAttribute("Algorithm", "http://www.w3.org/2000/09/xmldsig#sha1");
+                            $reference->appendChild( $digestMethod );
 
+                            $digestValue = $xml->createElement( "ds:DigestValue", "" );
+                            $reference->appendChild( $digestValue );
 
+                    $SignatureValue = $xml->createElement( "ds:SignatureValue", "" );
+                    $signature->appendChild( $SignatureValue );
+
+                    $KeyInfo = $xml->createElement( "ds:KeyInfo");
+                    $signature->appendChild( $KeyInfo );
+
+                        $X509Data = $xml->createElement( "ds:X509Data");
+                        $KeyInfo->appendChild( $X509Data );
+
+                            $X509Certificate = $xml->createElement( "ds:X509Certificate", "MIIESTCCAzGgAwIBAgIKWOCRzgAAAAAAIjANBgkqhkiG9w0BAQUFADAnMRUwEwYKCZImiZPyLGQBGRYFU1VOQVQxDjAMBgNVBAMTBVNVTkFUMB4XDTEwMTIyODE5NTExMFoXDTExMTIyODIwMDExMFowgZUxCzAJBgNVBAYTAlBFMQ0wCwYDVQQIEwRMSU1BMQ0wCwYDVQQHEwRMSU1BMREwDwYDVQQKEwhTT1VUSEVSTjEUMBIGA1UECxMLMjAxMDAxNDc1MTQxFDASBgNVBAMTC0JvcmlzIFN1bGNhMSkwJwYJKoZIhvcNAQkBFhpCU1VMQ0FAU09VVEhFUk5QRVJVLkNPTS5QRTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtRtcpfBLzyajuEmYt4mVH8EE02KQiETsdKStUThVYM7g3Lkx5zq3SH5nLH00EKGCtota6RR+V40sgIbnh+Nfs1SOQcAohNwRfWhho7sKNZFR971rFxj4cTKMEvpt8Dr98UYFkJhph6WnsniGM2tJDq9KJ52UXrlScMfBityx0AsCAwEAAaOCAYowggGGMA4GA1UdDwEB/wQEAwIE8DBEBgkqhkiG9w0BCQ8ENzA1MA4GCCqGSIb3DQMCAgIAgDAOBggqhkiG9w0DBAICAIAwBwYFKw4DAgcwCgYIKoZIhvcNAwcwHQYDVR0OBBYEFG/m6twbiRNzRINavjq+U0j/sZECMBMGA1UdJQQMMAoGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFN9kHQDqWONmozw3xdNSIMFW2t+7MFkGA1UdHwRSMFAwTqBMoEqGImh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9TVU5BVC5jcmyGJGZpbGU6Ly9cXHBjYjIyNlxDZXJ0RW5yb2xsXFNVTkFULmNybDB+BggrBgEFBQcBAQRyMHAwNQYIKwYBBQUHMAKGKWh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9wY2IyMjZfU1VOQVQuY3J0MDcGCCsGAQUFBzAChitmaWxlOi8vXFxwY2IyMjZcQ2VydEVucm9sbFxwY2IyMjZfU1VOQVQuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQBI6wJ/QmRpz3C3rorBflOvA9DOa3GNiiB7rtPIjF4mPmtgfo2pK9gvnxmV2pST3ovfu0nbG2kpjzzaaelRjEodHvkcM3abGsOE53wfxqQF5uf/jkzZA9hbLHtE1aLKBD0Mhzc6cvI072alnE6QU3RZ16ie9CYsHmMrs+sPHMy8DJU5YrdnqHdSn2D3nhKBi4QfT/WURPOuo6DF4iWgrCyMf3eJgmGKSUN3At5fK4HSpfyURT0kboaJKNBgQwy0HhGh5BLM7DsTi/KwfdUYkoFgrY71Pm23+ra+xTow1Vk9gj5NqrlpMY5gAVQXEIo1++GxDtaK/5EiVKSqzJ6geIfz");
+                            $X509Data->appendChild( $X509Certificate );
+
+        $Signature = $xml->createElement( "cac:Signature" );
+        $invoice->appendChild( $Signature );
+
+            $ID = $xml->createElement( "cbc:ID", "IDSignSP" );
+            $Signature->appendChild( $ID );
+
+            $SignatoryParty = $xml->createElement( "cac:SignatoryParty" );
+            $Signature->appendChild( $SignatoryParty );
+
+                $PartyIdentification = $xml->createElement( "cac:PartyIdentification" );
+                $SignatoryParty->appendChild( $PartyIdentification );
+
+                    $ID = $xml->createElement( "cbc:ID", $comprobante['information']['identidad_documento']['numero'] );
+                    $PartyIdentification->appendChild( $ID );
+
+                $PartyName = $xml->createElement( "cac:PartyName" );
+                $SignatoryParty->appendChild( $PartyName );
+
+                    $Name = $xml->createElement( "cbc:Name", $comprobante['information']['nombre'] );
+                    $PartyName->appendChild( $Name );
+
+            $DigitalSignatureAttachment = $xml->createElement( "cac:DigitalSignatureAttachment" );
+            $Signature->appendChild( $DigitalSignatureAttachment );
+
+                $ExternalReference = $xml->createElement( "cac:ExternalReference" );
+                $DigitalSignatureAttachment->appendChild( $ExternalReference );
+
+                    $URI = $xml->createElement( "cbc:URI", "#SignatureCF" );
+                    $ExternalReference->appendChild( $URI );
+
+        /*
+
+        <cac:Signature>
+            <cbc:ID>IDSignSP</cbc:ID>
+            <cac:SignatoryParty>
+                <cac:PartyIdentification>
+                    <cbc:ID>20100454523</cbc:ID>
+                </cac:PartyIdentification>
+                <cac:PartyName>
+                    <cbc:Name>SOPORTE TECNOLOGICO EIRL</cbc:Name>
+                </cac:PartyName>
+            </cac:SignatoryParty>
+            <cac:DigitalSignatureAttachment>
+                <cac:ExternalReference>
+                    <cbc:URI>#SignatureSP</cbc:URI>
+                </cac:ExternalReference>
+            </cac:DigitalSignatureAttachment>
+        </cac:Signature>
+        
+        <ds:Signature Id="SignatureCF">
+            <ds:SignedInfo>
+                <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+                <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                <ds:Reference URI="">
+                    <ds:Transforms>
+                        <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#envelopedsignature"/>
+                    </ds:Transforms>
+                    <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                    <ds:DigestValue>ZYhfRQAjGQ4oOf0a+ryuqbuG6bc=</ds:DigestValue>
+                </ds:Reference>
+            </ds:SignedInfo>
+            <ds:SignatureValue>
+                dAsw7ytlJGtxSIWPeVSuN8M8AwjoHVjY3cy9N/3hyTH/Pod7km+WRx52aWEBrGaMc1W4i5IQZFZsToqoUHXueC3k9SBt94xPEhT2331V8qQsJqCMdW0U5NpZnyoebL8MPISLF12z869TnDlpFrbDuqY+rPqSueQHyTlhtkVWDVI=
+            </ds:SignatureValue>
+            <ds:KeyInfo>
+                <ds:X509Data>
+                    <ds:X509SubjectName>
+                        1.2.840.113549.1.9.1=#161a4253554c434140534f55544845524e504552552e434f4d2e5045,CN=JuanRobles,OU=20200464529,O=MAYORISTAS CFFSA,L=LIMA,ST=LIMA,C=PE
+                    </ds:X509SubjectName>
+                    <ds:X509Certificate>
+                        MIIESTCCAzGgAwIBAgIKWOCRzgAAAAAAIjANBgkqhkiG9w0BAQUFADAnMRUwEwYKCZImiZPyLGQBGRYFU1VOQVQxDjAMBgNVBAMTBVNVTkFUMB4XDTEwMTIyODE5NTExMFoXDTExMTIyODIwMDExMFowgZUxCzAJBgNVBAYTAlBFMQ0wCwYDVQQIEwRMSU1BMQ0wCwYDVQQHEwRMSU1BMREwDwYDVQQKEwhTT1VUSEVSTjEUMBIGA1UECxMLMjAxMDAxNDc1MTQxFDASBgNVBAMTC0JvcmlzIFN1bGNhMSkwJwYJKoZIhvcNAQkBFhpCU1VMQ0FAU09VVEhFUk5QRVJVLkNPTS5QRTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtRtcpfBLzyajuEmYt4mVH8EE02KQiETsdKStUThVYM7g3Lkx5zq3SH5nLH00EKGCtota6RR+V40sgIbnh+Nfs1SOQcAohNwRfWhho7sKNZFR971rFxj4cTKMEvpt8Dr98UYFkJhph6WnsniGM2tJDq9KJ52UXrlScMfBityx0AsCAwEAAaOCAYowggGGMA4GA1UdDwEB/wQEAwIE8DBEBgkqhkiG9w0BCQ8ENzA1MA4GCCqGSIb3DQMCAgIAgDAOBggqhkiG9w0DBAICAIAwBwYFKw4DAgcwCgYIKoZIhvcNAwcwHQYDVR0OBBYEFG/m6twbiRNzRINavjq+U0j/sZECMBMGA1UdJQQMMAoGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFN9kHQDqWONmozw3xdNSIMFW2t+7MFkGA1UdHwRSMFAwTqBMoEqGImh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9TVU5BVC5jcmyGJGZpbGU6Ly9cXHBjYjIyNlxDZXJ0RW5yb2xsXFNVTkFULmNybDB+BggrBgEFBQcBAQRyMHAwNQYIKwYBBQUHMAKGKWh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9wY2IyMjZfU1VOQVQuY3J0MDcGCCsGAQUFBzAChitmaWxlOi8vXFxwY2IyMjZcQ2VydEVucm9sbFxwY2IyMjZfU1VOQVQuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQBI6wJ/QmRpz3C3rorBflOvA9DOa3GNiiB7rtPIjF4mPmtgfo2pK9gvnxmV2pST3ovfu0nbG2kpjzzaaelRjEodHvkcM3abGsOE53wfxqQF5uf/jkzZA9hbLHtE1aLKBD0Mhzc6cvI072alnE6QU3RZ16ie9CYsHmMrs+sPHMy8DJU5YrdnqHdSn2D3nhKBi4QfT/WURPOuo6DF4iWgrCyMf3eJgmGKSUN3At5fK4HSpfyURT0kboaJKNBgQwy0HhGh5BLM7DsTi/KwfdUYkoFgrY71Pm23+ra+xTow1Vk9gj5NqrlpMY5gAVQXEIo1++GxDtaK/5EiVKSqzJ6geIfz
+                    </ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </ds:Signature>
 
         */
+
+      
         //dd($comprobante);
         dd($xml);
     }
