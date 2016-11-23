@@ -215,57 +215,88 @@ class ComprobanteController extends Controller
                     $URI = $xml->createElement( "cbc:URI", "#SignatureCF" );
                     $ExternalReference->appendChild( $URI );
 
+        $AccountingSupplierParty = $xml->createElement( "cac:AccountingSupplierParty" );
+        $invoice->appendChild( $AccountingSupplierParty );
+
+            $CustomerAssignedAccountID = $xml->createElement( "cbc:CustomerAssignedAccountID", $comprobante['information']['identidad_documento']['numero'] );
+            $AccountingSupplierParty->appendChild( $CustomerAssignedAccountID );
+
+            $Party = $xml->createElement( "cac:Party" );
+            $AccountingSupplierParty->appendChild( $Party );
+
+                $PartyName = $xml->createElement( "cac:PartyName" );
+                $Party->appendChild( $PartyName );
+
+                    $Name = $xml->createElement( "cbc:Name", $comprobante['information']['nombre_comercial'] );
+                    $PartyName->appendChild( $Name );
+
+                if (count($comprobante['information']['domicilio']) != 0) {
+                    $PostalAddress = $xml->createElement( "cac:PostalAddress" );
+                    $Party->appendChild( $PostalAddress );
+
+                        $ID = $xml->createElement( "cbc:ID", $comprobante['information']['domicilio']['cod_ubigeo'] );
+                        $PostalAddress->appendChild( $ID );
+
+                        $StreetName = $xml->createElement( "cbc:StreetName", $comprobante['information']['domicilio']['direccion_completa'] );
+                        $PostalAddress->appendChild( $StreetName );
+
+                        $CitySubdivisionName = $xml->createElement( "cbc:CitySubdivisionName", $comprobante['information']['domicilio']['urbanizacion'] );
+                        $PostalAddress->appendChild( $CitySubdivisionName );
+
+                        $CityName = $xml->createElement( "cbc:CityName", $comprobante['information']['domicilio']['departamento'] );
+                        $PostalAddress->appendChild( $CityName );
+
+                        $CountrySubentity = $xml->createElement( "cbc:CountrySubentity", $comprobante['information']['domicilio']['provincia'] );
+                        $PostalAddress->appendChild( $CountrySubentity );
+
+                        $District = $xml->createElement( "cbc:District", $comprobante['information']['domicilio']['distrito'] );
+                        $PostalAddress->appendChild( $District );
+
+                        $Country = $xml->createElement( "cac:Country" );
+                        $PostalAddress->appendChild( $Country );
+
+                            $IdentificationCode = $xml->createElement( "cbc:IdentificationCode", $comprobante['information']['domicilio']['cod_pais'] );
+                            $Country->appendChild( $IdentificationCode );
+                }
+
+                $PartyLegalEntity = $xml->createElement( "cac:PartyLegalEntity" );
+                $Party->appendChild( $PartyLegalEntity );
+
+                    $RegistrationName = $xml->createElement( "cbc:RegistrationName", $comprobante['information']['nombre'] );
+                    $PartyLegalEntity->appendChild( $RegistrationName );
+
+
+
         /*
 
-        <cac:Signature>
-            <cbc:ID>IDSignSP</cbc:ID>
-            <cac:SignatoryParty>
-                <cac:PartyIdentification>
-                    <cbc:ID>20100454523</cbc:ID>
-                </cac:PartyIdentification>
+        <cac:AccountingSupplierParty>
+            <cbc:CustomerAssignedAccountID>20100113612</cbc:CustomerAssignedAccountID>
+            <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
+            <cac:Party>
                 <cac:PartyName>
-                    <cbc:Name>SOPORTE TECNOLOGICO EIRL</cbc:Name>
+                    <cbc:Name><![CDATA[K&G Laboratorios]]></cbc:Name>
                 </cac:PartyName>
-            </cac:SignatoryParty>
-            <cac:DigitalSignatureAttachment>
-                <cac:ExternalReference>
-                    <cbc:URI>#SignatureSP</cbc:URI>
-                </cac:ExternalReference>
-            </cac:DigitalSignatureAttachment>
-        </cac:Signature>
-        
-        <ds:Signature Id="SignatureCF">
-            <ds:SignedInfo>
-                <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-                <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <ds:Reference URI="">
-                    <ds:Transforms>
-                        <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#envelopedsignature"/>
-                    </ds:Transforms>
-                    <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <ds:DigestValue>ZYhfRQAjGQ4oOf0a+ryuqbuG6bc=</ds:DigestValue>
-                </ds:Reference>
-            </ds:SignedInfo>
-            <ds:SignatureValue>
-                dAsw7ytlJGtxSIWPeVSuN8M8AwjoHVjY3cy9N/3hyTH/Pod7km+WRx52aWEBrGaMc1W4i5IQZFZsToqoUHXueC3k9SBt94xPEhT2331V8qQsJqCMdW0U5NpZnyoebL8MPISLF12z869TnDlpFrbDuqY+rPqSueQHyTlhtkVWDVI=
-            </ds:SignatureValue>
-            <ds:KeyInfo>
-                <ds:X509Data>
-                    <ds:X509SubjectName>
-                        1.2.840.113549.1.9.1=#161a4253554c434140534f55544845524e504552552e434f4d2e5045,CN=JuanRobles,OU=20200464529,O=MAYORISTAS CFFSA,L=LIMA,ST=LIMA,C=PE
-                    </ds:X509SubjectName>
-                    <ds:X509Certificate>
-                        MIIESTCCAzGgAwIBAgIKWOCRzgAAAAAAIjANBgkqhkiG9w0BAQUFADAnMRUwEwYKCZImiZPyLGQBGRYFU1VOQVQxDjAMBgNVBAMTBVNVTkFUMB4XDTEwMTIyODE5NTExMFoXDTExMTIyODIwMDExMFowgZUxCzAJBgNVBAYTAlBFMQ0wCwYDVQQIEwRMSU1BMQ0wCwYDVQQHEwRMSU1BMREwDwYDVQQKEwhTT1VUSEVSTjEUMBIGA1UECxMLMjAxMDAxNDc1MTQxFDASBgNVBAMTC0JvcmlzIFN1bGNhMSkwJwYJKoZIhvcNAQkBFhpCU1VMQ0FAU09VVEhFUk5QRVJVLkNPTS5QRTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtRtcpfBLzyajuEmYt4mVH8EE02KQiETsdKStUThVYM7g3Lkx5zq3SH5nLH00EKGCtota6RR+V40sgIbnh+Nfs1SOQcAohNwRfWhho7sKNZFR971rFxj4cTKMEvpt8Dr98UYFkJhph6WnsniGM2tJDq9KJ52UXrlScMfBityx0AsCAwEAAaOCAYowggGGMA4GA1UdDwEB/wQEAwIE8DBEBgkqhkiG9w0BCQ8ENzA1MA4GCCqGSIb3DQMCAgIAgDAOBggqhkiG9w0DBAICAIAwBwYFKw4DAgcwCgYIKoZIhvcNAwcwHQYDVR0OBBYEFG/m6twbiRNzRINavjq+U0j/sZECMBMGA1UdJQQMMAoGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFN9kHQDqWONmozw3xdNSIMFW2t+7MFkGA1UdHwRSMFAwTqBMoEqGImh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9TVU5BVC5jcmyGJGZpbGU6Ly9cXHBjYjIyNlxDZXJ0RW5yb2xsXFNVTkFULmNybDB+BggrBgEFBQcBAQRyMHAwNQYIKwYBBQUHMAKGKWh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9wY2IyMjZfU1VOQVQuY3J0MDcGCCsGAQUFBzAChitmaWxlOi8vXFxwY2IyMjZcQ2VydEVucm9sbFxwY2IyMjZfU1VOQVQuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQBI6wJ/QmRpz3C3rorBflOvA9DOa3GNiiB7rtPIjF4mPmtgfo2pK9gvnxmV2pST3ovfu0nbG2kpjzzaaelRjEodHvkcM3abGsOE53wfxqQF5uf/jkzZA9hbLHtE1aLKBD0Mhzc6cvI072alnE6QU3RZ16ie9CYsHmMrs+sPHMy8DJU5YrdnqHdSn2D3nhKBi4QfT/WURPOuo6DF4iWgrCyMf3eJgmGKSUN3At5fK4HSpfyURT0kboaJKNBgQwy0HhGh5BLM7DsTi/KwfdUYkoFgrY71Pm23+ra+xTow1Vk9gj5NqrlpMY5gAVQXEIo1++GxDtaK/5EiVKSqzJ6geIfz
-                    </ds:X509Certificate>
-                </ds:X509Data>
-            </ds:KeyInfo>
-        </ds:Signature>
+                <cac:PostalAddress>
+                    <cbc:ID>150114</cbc:ID>
+                    <cbc:StreetName>CALLE LOS OLIVOS 767</cbc:StreetName>
+                    <cbc:CitySubdivisionName>URB. SANTA FELICIA</cbc:CitySubdivisionName>
+                    <cbc:CityName>LIMA</cbc:CityName>
+                    <cbc:CountrySubentity>LIMA</cbc:CountrySubentity>
+                    <cbc:District>LA MOLINA</cbc:District>
+                    <cac:Country>
+                        <cbc:IdentificationCode>PE</cbc:IdentificationCode>
+                    </cac:Country>
+                </cac:PostalAddress>
+                <cac:PartyLegalEntity>
+                    <cbc:RegistrationName><![CDATA[K&G Asociados S. A.]]></cbc:RegistrationName>
+                </cac:PartyLegalEntity>
+            </cac:Party>
+        </cac:AccountingSupplierParty>
 
         */
-
       
-        //dd($comprobante);
-        dd($xml);
+        dd($comprobante);
+        //dd($xml);
     }
 
     /**
