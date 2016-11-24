@@ -18,11 +18,12 @@ class ProductoController extends Controller
     {
         $data = Producto::all();
         $data->each(function($data){
-            $igvItem = $data->valor_unitario * $data->tasa_igv;
+            $igvItem = 0;
             $iscItem = 0;
-            if ($data->tasa_igs != null) {
-               $iscItem = $data->valor_unitario * $data->tasa_igv;
-            }
+            if ($data->tasa_isc != null)
+               $iscItem = $data->valor_unitario * $data->tasa_isc;
+            if ($data->afectacion_igv == "Gravado")
+                $igvItem = ($data->valor_unitario + $iscItem) * 0.18;
             $data->precio_venta = round($data->valor_unitario + $igvItem + $iscItem, 2);
         });
         return response()->json($data);

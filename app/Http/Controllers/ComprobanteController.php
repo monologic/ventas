@@ -69,6 +69,8 @@ class ComprobanteController extends Controller
         $ublExtension1->appendChild( $ExtContent );
         $AdInfo = $xml->createElement( "sac:AdditionalInformation" );
         $ExtContent->appendChild( $AdInfo );
+
+        /* Total y Leyendas */
         
         foreach ($comprobante['totalValorVenta'] as $i => $value) {
             if ($value['monto'] != 0) {
@@ -133,7 +135,7 @@ class ComprobanteController extends Controller
                 $value = $xml->createElement( "cbc:Value", $value['value'] );
                 $AdProp->appendChild( $value );
         }
-
+        /* Firma Digital */
         $ublExtension2 = $xml->createElement( "ext:UBLExtension" );
         $ublExtensions->appendChild( $ublExtension2 );
         
@@ -215,6 +217,7 @@ class ComprobanteController extends Controller
                     $URI = $xml->createElement( "cbc:URI", "#SignatureCF" );
                     $ExternalReference->appendChild( $URI );
 
+        /* Info empresa */ 
         $AccountingSupplierParty = $xml->createElement( "cac:AccountingSupplierParty" );
         $invoice->appendChild( $AccountingSupplierParty );
 
@@ -265,38 +268,194 @@ class ComprobanteController extends Controller
                     $RegistrationName = $xml->createElement( "cbc:RegistrationName", $comprobante['information']['nombre'] );
                     $PartyLegalEntity->appendChild( $RegistrationName );
 
+        /* Informacion general */
+        $UBLVersionID = $xml->createElement( "cbc:UBLVersionID", $comprobante['version_UBL'] );
+        $invoice->appendChild( $UBLVersionID );
 
+        $CustomizationID = $xml->createElement( "cbc:CustomizationID", $comprobante['version_doc'] );
+        $invoice->appendChild( $CustomizationID );
 
-        /*
+        // Falta el numero de factura 
+        $ID = $xml->createElement( "cbc:ID", "" );
+        $invoice->appendChild( $ID );     
 
-        <cac:AccountingSupplierParty>
-            <cbc:CustomerAssignedAccountID>20100113612</cbc:CustomerAssignedAccountID>
-            <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
-            <cac:Party>
-                <cac:PartyName>
-                    <cbc:Name><![CDATA[K&G Laboratorios]]></cbc:Name>
-                </cac:PartyName>
-                <cac:PostalAddress>
-                    <cbc:ID>150114</cbc:ID>
-                    <cbc:StreetName>CALLE LOS OLIVOS 767</cbc:StreetName>
-                    <cbc:CitySubdivisionName>URB. SANTA FELICIA</cbc:CitySubdivisionName>
-                    <cbc:CityName>LIMA</cbc:CityName>
-                    <cbc:CountrySubentity>LIMA</cbc:CountrySubentity>
-                    <cbc:District>LA MOLINA</cbc:District>
-                    <cac:Country>
-                        <cbc:IdentificationCode>PE</cbc:IdentificationCode>
-                    </cac:Country>
-                </cac:PostalAddress>
-                <cac:PartyLegalEntity>
-                    <cbc:RegistrationName><![CDATA[K&G Asociados S. A.]]></cbc:RegistrationName>
-                </cac:PartyLegalEntity>
-            </cac:Party>
-        </cac:AccountingSupplierParty>
+        $IssueDate = $xml->createElement( "cbc:IssueDate", date("Y-m-d") );
+        $invoice->appendChild( $IssueDate );
 
-        */
-      
-        dd($comprobante);
-        //dd($xml);
+        $InvoiceTypeCode = $xml->createElement( "cbc:InvoiceTypeCode", $comprobante['tipoDocumento'] );
+        $invoice->appendChild( $InvoiceTypeCode );
+
+        $DocumentCurrencyCode = $xml->createElement( "cbc:DocumentCurrencyCode", $comprobante['moneda'] );
+        $invoice->appendChild( $DocumentCurrencyCode );
+
+        /* Información del CLiente */
+        $AccountingCustomerParty = $xml->createElement( "cac:AccountingCustomerParty" );
+        $invoice->appendChild( $AccountingCustomerParty );
+
+            $CustomerAssignedAccountID = $xml->createElement( "cbc:CustomerAssignedAccountID", $comprobante['cliente']['numero'] );
+            $AccountingCustomerParty->appendChild( $CustomerAssignedAccountID );
+
+            $AdditionalAccountID = $xml->createElement( "cbc:AdditionalAccountID", $comprobante['cliente']['tipo_doc'] );
+            $AccountingCustomerParty->appendChild( $AdditionalAccountID );
+
+            $Party = $xml->createElement( "cac:Party" );
+            $AccountingCustomerParty->appendChild( $Party );
+
+                $PartyLegalEntity = $xml->createElement( "cac:PartyLegalEntity" );
+                $Party->appendChild( $PartyLegalEntity );
+
+                    $RegistrationName = $xml->createElement( "cbc:RegistrationName", $comprobante['cliente']['clientes'][0]['nombre'] );
+                    $PartyLegalEntity->appendChild( $RegistrationName );
+
+        /* sumatoria Impuestos */
+        foreach ($comprobante['sumatoriasImpuestos'] as $value) {
+            if ($value['monto'] != 0) {
+                $TaxTotal = $xml->createElement( "cac:TaxTotal" );
+                $invoice->appendChild( $TaxTotal );
+                    $TaxAmount = $xml->createElement( "cbc:TaxAmount", $value['monto'] );
+                    $TaxAmount->setAttribute("currencyID", "PEN");
+                    $TaxTotal->appendChild( $TaxAmount );
+
+                    $TaxSubtotal = $xml->createElement( "cac:TaxSubtotal" );
+                    $TaxTotal->appendChild( $TaxSubtotal );
+                        $TaxAmount = $xml->createElement( "cbc:TaxAmount", $value['monto'] );
+                        $TaxAmount->setAttribute("currencyID", "PEN");
+                        $TaxSubtotal->appendChild( $TaxAmount );
+
+                        $TaxCategory = $xml->createElement( "cac:TaxCategory" );
+                        $TaxSubtotal->appendChild( $TaxCategory );
+                            $TaxScheme = $xml->createElement( "cac:TaxScheme" );
+                            $TaxCategory->appendChild( $TaxScheme );
+                                $ID = $xml->createElement( "cbc:ID", $value['codigo_tributo'] );
+                                $TaxScheme->appendChild( $ID );
+
+                                $Name = $xml->createElement( "cbc:Name", $value['nombre_tributo'] );
+                                $TaxScheme->appendChild( $Name );
+
+                                $TaxTypeCode = $xml->createElement( "cbc:TaxTypeCode", $value['ci_tributo'] );
+                                $TaxScheme->appendChild( $TaxTypeCode );
+            }
+        }
+
+        /* Importe Total */
+        $LegalMonetaryTotal = $xml->createElement( "cac:LegalMonetaryTotal" );
+        $invoice->appendChild( $LegalMonetaryTotal );
+            $PayableAmount = $xml->createElement( "cbc:PayableAmount", $comprobante['importeTotal'] );
+            $PayableAmount->setAttribute("currencyID", "PEN");
+            $LegalMonetaryTotal->appendChild( $PayableAmount );
+       
+        /* Detalles */
+        foreach ($comprobante['detalles'] as $detalle) {
+            $InvoiceLine = $xml->createElement( "cac:InvoiceLine" );
+            $invoice->appendChild( $InvoiceLine );
+                $ID = $xml->createElement( "cbc:ID", $detalle['numero_item'] );
+                $InvoiceLine->appendChild( $ID );
+
+                $InvoicedQuantity = $xml->createElement( "cbc:InvoicedQuantity", $detalle['cantidad'] );
+                $InvoicedQuantity->setAttribute("unitCode", $detalle['unidad_medida']);
+                $InvoiceLine->appendChild( $InvoicedQuantity );
+
+                $LineExtensionAmount = $xml->createElement( "cbc:LineExtensionAmount", $detalle['valor_venta'] );
+                $LineExtensionAmount->setAttribute("currencyID", 'PEN');
+                $InvoiceLine->appendChild( $LineExtensionAmount );
+
+                $PricingReference = $xml->createElement( "cac:PricingReference");
+                $InvoiceLine->appendChild( $PricingReference );
+                    $AlternativeConditionPrice = $xml->createElement( "cac:AlternativeConditionPrice");
+                    $PricingReference->appendChild( $AlternativeConditionPrice );
+                        $PriceAmount = $xml->createElement( "cbc:PriceAmount", $detalle['precio_venta']['monto'] );
+                        $PriceAmount->setAttribute("currencyID", 'PEN');
+                        $AlternativeConditionPrice->appendChild( $PriceAmount );
+
+                        $PriceTypeCode = $xml->createElement( "cbc:PriceTypeCode", $detalle['precio_venta']['codigo'] );
+                        $AlternativeConditionPrice->appendChild( $PriceTypeCode );
+
+                /* ISC por Item */
+                if ( $detalle['afectacion_isc']['monto'] != 0 ) {
+                    $TaxTotal = $xml->createElement( "cac:TaxTotal" );
+                    $InvoiceLine->appendChild( $TaxTotal );
+                        $TaxAmount = $xml->createElement( "cbc:TaxAmount", $detalle['afectacion_isc']['monto'] );
+                        $TaxAmount->setAttribute("currencyID", "PEN");
+                        $TaxTotal->appendChild( $TaxAmount );
+
+                        $TaxSubtotal = $xml->createElement( "cac:TaxSubtotal" );
+                        $TaxTotal->appendChild( $TaxSubtotal );
+                            $TaxAmount = $xml->createElement( "cbc:TaxAmount", $detalle['afectacion_isc']['monto'] );
+                            $TaxAmount->setAttribute("currencyID", "PEN");
+                            $TaxSubtotal->appendChild( $TaxAmount );
+
+                            $TaxCategory = $xml->createElement( "cac:TaxCategory" );
+                            $TaxSubtotal->appendChild( $TaxCategory );
+                                $TierRange = $xml->createElement( "cac:TierRange", $detalle['afectacion_isc']['codigo_tipo'] );
+                                $TaxCategory->appendChild( $TierRange );
+
+                                $TaxScheme = $xml->createElement( "cac:TaxScheme" );
+                                $TaxCategory->appendChild( $TaxScheme );
+                                    $ID = $xml->createElement( "cbc:ID", $detalle['afectacion_isc']['codigo_tributo'] );
+                                    $TaxScheme->appendChild( $ID );
+
+                                    $Name = $xml->createElement( "cbc:Name", $detalle['afectacion_isc']['nombre_tributo'] );
+                                    $TaxScheme->appendChild( $Name );
+
+                                    $TaxTypeCode = $xml->createElement( "cbc:TaxTypeCode", $detalle['afectacion_isc']['ci_tributo'] );
+                                    $TaxScheme->appendChild( $TaxTypeCode );
+                }
+
+                /* IGV por Item */
+                if ( $detalle['afectacion_igv']['monto'] != 0 ) {
+                    $TaxTotal = $xml->createElement( "cac:TaxTotal" );
+                    $InvoiceLine->appendChild( $TaxTotal );
+                        $TaxAmount = $xml->createElement( "cbc:TaxAmount", $detalle['afectacion_igv']['monto'] );
+                        $TaxAmount->setAttribute("currencyID", "PEN");
+                        $TaxTotal->appendChild( $TaxAmount );
+
+                        $TaxSubtotal = $xml->createElement( "cac:TaxSubtotal" );
+                        $TaxTotal->appendChild( $TaxSubtotal );
+                            $TaxAmount = $xml->createElement( "cbc:TaxAmount", $detalle['afectacion_igv']['monto'] );
+                            $TaxAmount->setAttribute("currencyID", "PEN");
+                            $TaxSubtotal->appendChild( $TaxAmount );
+
+                            $TaxCategory = $xml->createElement( "cac:TaxCategory" );
+                            $TaxSubtotal->appendChild( $TaxCategory );
+                                $TaxExemptionReasonCode = $xml->createElement( "cac:TaxExemptionReasonCode", $detalle['afectacion_igv']['codigo_tipo'] );
+                                $TaxCategory->appendChild( $TaxExemptionReasonCode );
+
+                                $TaxScheme = $xml->createElement( "cac:TaxScheme" );
+                                $TaxCategory->appendChild( $TaxScheme );
+                                    $ID = $xml->createElement( "cbc:ID", $detalle['afectacion_igv']['codigo_tributo'] );
+                                    $TaxScheme->appendChild( $ID );
+
+                                    $Name = $xml->createElement( "cbc:Name", $detalle['afectacion_igv']['nombre_tributo'] );
+                                    $TaxScheme->appendChild( $Name );
+
+                                    $TaxTypeCode = $xml->createElement( "cbc:TaxTypeCode", $detalle['afectacion_igv']['ci_tributo'] );
+                                    $TaxScheme->appendChild( $TaxTypeCode );
+                }
+
+                $Item = $xml->createElement( "cac:Item" );
+                $InvoiceLine->appendChild( $Item );
+                    $Description = $xml->createElement( "cbc:Description", $detalle['descripcion'] );
+                    $Item->appendChild( $Description );
+
+                    if ($detalle['codigo_producto'] != null) {
+                        $SellersItemIdentification = $xml->createElement( "cac:SellersItemIdentification" );
+                        $Item->appendChild( $SellersItemIdentification );
+                            $ID = $xml->createElement( "cbc:ID", $detalle['codigo_producto'] );
+                            $SellersItemIdentification->appendChild( $ID );
+                    }
+                    
+                $Price = $xml->createElement( "cac:Price" );
+                $InvoiceLine->appendChild( $Price );
+                    $PriceAmount = $xml->createElement( "cbc:PriceAmount", $detalle['valor_unitario'] );
+                    $PriceAmount->setAttribute("currencyID", "PEN");
+                    $Price->appendChild( $PriceAmount );
+        }
+        
+        $strings_xml = $xml->saveXML();
+        $xml->save('xml_files/pruebal.xml'); 
+
+        //dd($comprobante);
+        //dd($strings_xml);
     }
 
     /**

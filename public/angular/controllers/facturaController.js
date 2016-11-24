@@ -8,6 +8,8 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
     //$scope.Factura.detraccion = {};
     $scope.detalles = [];
 
+
+
     $scope.searchDocumento = function (numero) {
         if (numero != undefined) {
             $http.get('getDocumento/' + numero).then(function successCallback(response) {
@@ -232,8 +234,12 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
             ci_tributo: 'VAT'
         }
 
+        $scope.Factura.sumatoriasImpuestos = [];
+        $scope.Factura.sumatoriasImpuestos.push($scope.Factura.totalIgv);
+
         $scope.calcularTotalIsc();
     }
+
 
     $scope.calcularTotalIsc = function () {
 
@@ -247,6 +253,8 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
             nombre_tributo: 'ISC',
             ci_tributo: 'EXC'
         }
+
+        $scope.Factura.sumatoriasImpuestos.push($scope.Factura.totalIsc);
 
         $scope.calcularImporteTotal();
     }
