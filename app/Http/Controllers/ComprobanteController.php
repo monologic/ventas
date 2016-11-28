@@ -25,24 +25,49 @@ class ComprobanteController extends Controller
     public function store(Request $request)
     {
     	$comprobante = json_decode($request->json, true);
-		//dd($comprobante);
-        $this->direccionarTipoComprobante($comprobante);
+		dd($comprobante);
+
+        
+        //$this->direccionarTipoComprobante($comprobante);
         /*
-        $data = new Comprobante();
+        
         
         $data->save();
 
         return $data->id;*/
     }
 
+    public function storeFactura( $comprobante )
+    {
+        $data = new Comprobante();
+        $data->fecha_emision = date("Y-m-d");
+        $data->numeracion = $this->crearNumeracion($comprobante['tipoDocumento']);
+        $data->importe_total = $comprobante['importeTotal'];
+        $data->tipo_moneda = $comprobante['moneda'];
+        $data->version_ubl = $comprobante['version_UBL'];
+        $data->version_doc = $comprobante['version_doc'];
+        $data->cliente_id = $comprobante['cliente']['clientes'][0]['id'];
+        $data->information_id = $comprobante['information']['id'];
+        $data->user_id = \Auth::user()->id;
+        $data->tipo_comprobante = $comprobante['tipoDocumento'];
+
+        $data->save();
+
+        
+    }
+
+
     public function direccionarTipoComprobante( $comprobante )
     {
-        if ($comprobante['tipoDocumento'] == "01")
-            $this->createXMLDomFactura($comprobante);
+        if ($comprobante['tipoDocumento'] == "01"){
+            $this->storeFactura($comprobante);
+            //$this->createXMLDomFactura($comprobante);
+        }
+            
 
     }
 
-    public function createXMLDomFactura($comprobante)
+    public function createXMLDomFactura( $comprobante )
     {
         // "Create" the document.
         $xml = new \DOMDocument( "1.0", "ISO-8859-1" );
@@ -456,6 +481,26 @@ class ComprobanteController extends Controller
 
         //dd($comprobante);
         //dd($strings_xml);
+    }
+
+    public function crearNumeracion( $tipoComprobante )
+    {
+        $data = Comprobante::where( 'tipo_comprobante', $tipoComprobante )->get();
+        $total = count($data);
+
+        $numeroSiguiente = $total + 1;
+
+        if ($numeroSiguiente > 99999999) 
+            $numero = ($numeroSiguiente % 100000000) + 1;
+        else
+            $numero = ($numeroSiguiente % 100000000);
+
+        $serie = floor(($numeroSiguiente / 100000000)) + 1;
+        $serie = ($serie < 10) ? "0" . $serie : $serie;
+
+        $numeracion = "FA" . $serie . "-" . $numero;
+
+        return $numeracion;
     }
 
     /**
