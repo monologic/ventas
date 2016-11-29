@@ -53,6 +53,9 @@ class ComprobanteController extends Controller
 
         $data->save();
 
+        $controllerDetalle = new DetalleController();
+        $controllerDetalle->store($comprobante['detalles'], $data->id);
+
         
     }
 

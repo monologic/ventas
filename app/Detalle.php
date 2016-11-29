@@ -8,7 +8,7 @@ class Detalle extends Model
 {
     public $timestamps = false;
 
-	protected $fillable = ['unidad_medida', 'cantidad', 'valor_venta', 'orden', 'comprobante_id', 'igv_id', 'sistema_isc_id', 'descuento_id', 'producto_id', 'venta_precio_id', 'valores_referencial_id'];
+	protected $fillable = ['cantidad', 'valor_venta', 'orden', 'comprobante_id', 'producto_id', 'precio_venta'];
 
 	public function comprobante()
     {

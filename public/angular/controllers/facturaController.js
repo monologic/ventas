@@ -113,6 +113,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
             codigo_prod = null;
 
         $scope.detalles.push({
+            idProducto: $scope.Producto.id,
             percepcion: $scope.Producto.tasa_percep,
             detraccion: $scope.Producto.tasa_detracc,
             afectacion: $scope.Producto.afectacion_igv,
