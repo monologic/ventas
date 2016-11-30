@@ -14,7 +14,7 @@ class MontoController extends Controller
 	{
 		$montosId = array();
     	foreach ($montos as $monto) {
-    		print_r($monto);
+    		//print_r($monto);
     		if ($monto['monto'] != 0) {
     			$t = MontoTipo::where('codigo', $monto['codigo'])->get();
 	    		$s = new Monto();

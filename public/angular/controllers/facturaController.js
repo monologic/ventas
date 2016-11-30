@@ -275,6 +275,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
                 if (total > 700) {
                     montoDetraccion = total * $scope.detalles[i].detraccion;
                     monto = {
+                        codigo: "2003",
                         porcentaje: $scope.detalles[i].detraccion,
                         monto: montoDetraccion
                     }
