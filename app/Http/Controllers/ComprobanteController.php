@@ -25,10 +25,10 @@ class ComprobanteController extends Controller
     public function store(Request $request)
     {
     	$comprobante = json_decode($request->json, true);
-		dd($comprobante);
+		//dd($comprobante);
 
         
-        //$this->direccionarTipoComprobante($comprobante);
+        $this->direccionarTipoComprobante($comprobante);
         /*
         
         
@@ -56,7 +56,38 @@ class ComprobanteController extends Controller
         $controllerDetalle = new DetalleController();
         $controllerDetalle->store($comprobante['detalles'], $data->id);
 
+        $leyendaController = new LeyendaController();
+        $arrayData = $leyendaController->getIdLeyendas($comprobante['leyendas']);
+        $data->leyendas()->sync($arrayData);
+
+        $sumatoriaController = new SumatoriaController();
+        $arrayData = $sumatoriaController->store($comprobante['sumatoriasImpuestos']);
+        $data->sumatorias()->sync($arrayData);
+
+        $montoController = new MontoController();
+        $arrayData = $montoController->store($comprobante['totalValorVenta']);
+        $data->montos()->sync($arrayData);
+
+        if (array_key_exists('detraccion', $comprobante)) {
+            $montoController = new MontoController();
+            $arrayData = $montoController->store($comprobante['detraccion']);
+            $data->montos()->sync($arrayData);
+        }
+
+        if (array_key_exists('retencion', $comprobante)) {
+            $retenciones[] = $comprobante['retencion'];
+            $montoController = new MontoController();
+            $arrayData = $montoController->store($retenciones);
+            $data->montos()->sync($arrayData);
+        }
+
+        if (array_key_exists('percepcion', $comprobante)) {
+            $percepController = new PercepmonenacImporteController();
+            $percepController->store($comprobante['percepcion'], $data->id);
+        }
         
+        
+
     }
 
 
@@ -66,8 +97,6 @@ class ComprobanteController extends Controller
             $this->storeFactura($comprobante);
             //$this->createXMLDomFactura($comprobante);
         }
-            
-
     }
 
     public function createXMLDomFactura( $comprobante )

@@ -389,6 +389,7 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
             importeTotal = $scope.Factura.importeTotal - monto;
 
             $scope.Factura.retencion = {
+                codigo: "2002",
                 importeGravado: importeGravado,
                 monto:  monto,
                 importeTotal:importeTotal,
