@@ -86,7 +86,7 @@ class ComprobanteController extends Controller
             $percepController->store($comprobante['percepcion'], $data->id);
         }
         
-        
+        return $data->numeracion;
 
     }
 
@@ -94,12 +94,12 @@ class ComprobanteController extends Controller
     public function direccionarTipoComprobante( $comprobante )
     {
         if ($comprobante['tipoDocumento'] == "01"){
-            $this->storeFactura($comprobante);
-            //$this->createXMLDomFactura($comprobante);
+            $numeracion = $this->storeFactura($comprobante);
+            $this->createXMLDomFactura($comprobante, $numeracion);
         }
     }
 
-    public function createXMLDomFactura( $comprobante )
+    public function createXMLDomFactura( $comprobante, $numeracion )
     {
         // "Create" the document.
         $xml = new \DOMDocument( "1.0", "ISO-8859-1" );
@@ -333,7 +333,7 @@ class ComprobanteController extends Controller
         $invoice->appendChild( $CustomizationID );
 
         // Falta el numero de factura 
-        $ID = $xml->createElement( "cbc:ID", "" );
+        $ID = $xml->createElement( "cbc:ID", $numeracion );
         $invoice->appendChild( $ID );     
 
         $IssueDate = $xml->createElement( "cbc:IssueDate", date("Y-m-d") );
