@@ -400,7 +400,9 @@ app.controller('facturaController', function($scope, $http, tipoDocumento, unida
     }
 
     $scope.addDataDetraccion = function () {
-
+        for (var i = 0; i < $scope.Factura.detraccion.length; i++) {
+            $scope.Factura.detraccion[i].numero_cuenta = $('#numero_cuenta').val();;
+        }
         $scope.Factura.detraccionTotal.numero_cuenta = $('#numero_cuenta').val();
 
         //console.log($scope.Factura);

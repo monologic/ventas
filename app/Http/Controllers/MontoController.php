@@ -23,6 +23,9 @@ class MontoController extends Controller
 	    		if (array_key_exists('porcentaje', $monto)) {
 	    			$s->porcentaje = $monto['porcentaje'];
 	    		}
+	    		if (array_key_exists('numero_cuenta', $monto)) {
+	    			$s->numero_cuenta = $monto['numero_cuenta'];
+	    		}
 	    		$s->save();
 	    		$montosId[] = $s->id;
     		}
